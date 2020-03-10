@@ -4,6 +4,7 @@ class TrackableObject:
 		# using the current centroid
 		self.objectID = objectID
 		self.centroids = [centroid]
+		self.color = centroid[0]
 		# initialize a boolean used to indicate if the object has
 		# already been counted or not
 		self.counted = False
