@@ -8,8 +8,11 @@ class Colores:
 	blue_lower = np.array([100,100,23], np.uint8)
 	blue_upper = np.array([125,255,255], np.uint8)
 
-	yellow_lower = np.array([15,100,20], np.uint8)
-	yellow_upper = np.array([45,255,255], np.uint8)
+#	yellow_lower = np.array([15,100,20], np.uint8)
+#	yellow_upper = np.array([45,255, 255], np.uint8)
+
+	yellow_lower = np.array([20, 100, 100])
+	yellow_upper = np.array([30, 255, 255])
 
 	red1_lower = np.array([0,100,20], np.uint8)
 	red1_upper = np.array([5,255,255], np.uint8)
@@ -42,6 +45,7 @@ class Colores:
 	def start(self):
 		while True:
 			ret, self.frame = self.cap.read()
+			self.frame = cv2.flip(self.frame, cv2.ROTATE_90_CLOCKWISE) # Rota la imagen 90 degrees
 
 			self.rects = []
 			frameHSV = self.setHSVColorModel()
@@ -49,25 +53,7 @@ class Colores:
 			self.dibujarContornos((255,0,0))
 			self.update(self.rects)
 			self.setTrackeableObjects()
-
-			# construct a tuple of information we will be displaying on the
-			# frame
-			info = [
-				("TrackableObjs", 0),
-				("Down", self.total),
-				("Status", 10),
-			]
-
-			for i in range(len(self.colores)):
-				text = "{}: {}".format(self.colores[i], self.total[i])
-				cv2.putText(self.frame, text, (10, ((i * 20) + 20)),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-
-			# loop over the info tuples and draw them on our frame
-			# for (i, (k, v)) in enumerate(info):
-			# 	text = "{}: {}".format(k, v)
-			# 	cv2.putText(self.frame, text, (10, ((i * 20) + 20)),
-			# 		cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+			self.showResults()
 
 			if ret == True:
 				cv2.imshow('Frame', self.frame)
@@ -76,6 +62,12 @@ class Colores:
 				break
 
 		self.destroy()
+
+	def showResults(self):
+		for i in range(len(self.colores)):
+			text = "{}: {}".format(self.colores[i], self.total[i])
+			cv2.putText(self.frame, text, (10, ((i * 20) + 20)),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 	def setHSVColorModel(self):
 		return cv2.cvtColor(self.frame, cv2.COLOR_BGR2HSV)
@@ -90,17 +82,13 @@ class Colores:
 
 	def dibujarContornos(self, color):
 		for mask in range(len(self.masks)):
-			(contornos,hierarchy) = cv2.findContours(self.masks[mask], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+			(_,contornos,hierarchy) = cv2.findContours(self.masks[mask], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 			for pic, contour in enumerate(contornos):
 				if (cv2.contourArea(contour) > 600):
 					x,y,w,h = cv2.boundingRect(contour)
 					cv2.rectangle(self.frame,(x,y),(x+w,y+h),color, 3)
-					cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.75, [255,255,0], 1, cv2.LINE_AA)
-
-					M = cv2.moments(contour)
-					fx = int(M["m10"] / M["m00"])
-					fy = int(M["m01"] / M["m00"])
-					self.dibujarPunto(fx, fy)
+					cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y), 
+						cv2.FONT_HERSHEY_SIMPLEX, 0.75, [255,255,0], 1, cv2.LINE_AA)
 					self.rects.append((mask, x, y, w, h))
 
 	def setTrackeableObjects(self):
@@ -111,10 +99,7 @@ class Colores:
 
 			# if there is no existing trackable object, create one
 			if to is None:
-				print('Asigno color')
 				to = TrackableObject(objectID, centroid)
-				print(to.color)
-				# print(self.color[to.color])
 
 			if not to.counted:
 				self.total[to.color] += 1
@@ -126,9 +111,12 @@ class Colores:
 			# draw both the ID of the object and the centroid of the
 			# object on the output frame
 			text = "ID {}".format(objectID)
-			cv2.putText(self.frame, text, (centroid[0] - 10, centroid[1] - 10),
+			cv2.putText(self.frame, text, (centroid[1] + 10, centroid[2]),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-			cv2.circle(self.frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
+			self.dibujarPunto(centroid[1], centroid[2])
+			# cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.75, [255,255,0], 1, cv2.LINE_AA)
+
+			# cv2.circle(self.frame, (centroid[1], centroid[2]), 4, (0, 255, 0), -1)
 
 
 	def dibujarLinea(self):
@@ -162,8 +150,9 @@ class Colores:
 		# loop over the bounding box rectangles
 		for (i, (color, startX, startY, endX, endY)) in enumerate(rects):
 			# use the bounding box coordinates to derive the centroid
-			cX = int((startX + endX) / 2.0)
-			cY = int((startY + endY) / 2.0)
+			cX = int((startX + (startX+endX)) / 2.0)
+			cY = int((startY + (startY+endY)) / 2.0)
+
 			inputCentroids[i] = (color, cX, cY)
 
 		# if we are currently not tracking any objects take the input
