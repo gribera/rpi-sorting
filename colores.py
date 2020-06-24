@@ -25,14 +25,11 @@ class Colores:
 	colores = ['blue', 'yellow', 'red']
 	masks = [0, 0, 0]
 	total = [0, 0, 0]
-
-	rects = []
-	border_colors = [(255,0,0), (0,255,0), (0,0,255)]
+	border_colors = [(255,0,0), (0,255,255), (0,0,255)]
 
 	def __init__(self):
 		self.cap = cv2.VideoCapture(0)
 		self.frame = None
-		# self.objects = OrderedDict()
 		self.tracker = tracker.Tracker()
 
 	def start(self):
@@ -46,6 +43,7 @@ class Colores:
 			self.dibujarContornos()
 			self.tracker.update(self.rects)
 			self.total = self.tracker.setTrackeableObjects(self.total)
+			self.markObjects()
 			self.showResults()
 
 			if ret == True:
@@ -55,6 +53,13 @@ class Colores:
 				break
 
 		self.destroy()
+
+	def markObjects(self):
+		for (objectID, coords) in self.tracker.getObjects():
+			text = "ID {}".format(objectID)
+			cv2.putText(self.frame, text, (coords[1] + 10, coords[2]),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+			self.dibujarPunto(coords[1], coords[2])
 
 	def showResults(self):
 		for i in range(len(self.colores)):
@@ -84,7 +89,6 @@ class Colores:
 					cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y), 
 						cv2.FONT_HERSHEY_SIMPLEX, 0.75, [255,255,0], 1, cv2.LINE_AA)
 					self.rects.append((mask, x, y, w, h))
-
 
 	def dibujarLinea(self):
 		cv2.line(self.frame, (0 , 230), (640 , 230), (100,155,30), 3)

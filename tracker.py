@@ -29,16 +29,6 @@ class Tracker:
 			# store the trackable object in our dictionary
 			self.trackableObjects[objectID] = to
 
-			# draw both the ID of the object and the centroid of the
-			# object on the output frame
-			# text = "ID {}".format(objectID)
-			# cv2.putText(self.frame, text, (centroid[1] + 10, centroid[2]),
-			# 	cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-			# self.dibujarPunto(centroid[1], centroid[2])
-			# cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.75, [255,255,0], 1, cv2.LINE_AA)
-
-			# cv2.circle(self.frame, (centroid[1], centroid[2]), 4, (0, 255, 0), -1)
-			# 
 		return total
 
 	def update(self, rects):
@@ -173,3 +163,6 @@ class Tracker:
 	def deregister(self, objectID):
 		del self.objects[objectID]
 		del self.disappeared[objectID]
+
+	def getObjects(self):
+		return self.objects.items()
