@@ -1,13 +1,14 @@
-import cv2
 import numpy as np
 import colores as colores
+import formas as formas
 
 class Main:
-	color = colores.Colores()
+	# color = colores.Colores()
+	forma = formas.Formas()
 	rects = []
 	total = 0
 
 	def __init__(self):
-		self.color.start()
+		self.forma.start()
 
 main = Main()

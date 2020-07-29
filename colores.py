@@ -80,13 +80,13 @@ class Colores:
 
 	def dibujarContornos(self):
 		for mask in range(len(self.masks)):
-			(_,contornos,hierarchy) = cv2.findContours(self.masks[mask], cv2.RETR_EXTERNAL, 
+			(_,contornos,hierarchy) = cv2.findContours(self.masks[mask], cv2.RETR_EXTERNAL,
 				cv2.CHAIN_APPROX_SIMPLE)
 			for pic, contour in enumerate(contornos):
 				if (cv2.contourArea(contour) > 600):
 					x,y,w,h = cv2.boundingRect(contour)
 					cv2.rectangle(self.frame,(x,y),(x+w,y+h), self.border_colors[mask], 3)
-					cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y), 
+					cv2.putText(self.frame, '{},{}'.format(x, y), (x+10, y),
 						cv2.FONT_HERSHEY_SIMPLEX, 0.75, [255,255,0], 1, cv2.LINE_AA)
 					self.rects.append((mask, x, y, w, h))
 
