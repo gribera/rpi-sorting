@@ -6,35 +6,15 @@ from trackable_object import TrackableObject
 class Tracker:
 	def __init__(self, maxDisappeared=50, maxDistance=50):
 		self.nextObjectID = 0
-		self.objects = OrderedDict()
 		self.disappeared = OrderedDict()
 		self.maxDisappeared = maxDisappeared
 		self.maxDistance = maxDistance
 		self.trackableObjects = {}
 
-	def setTrackeableObjects(self, total):
-		for (objectID, centroid) in self.objects.items():
-			# check to see if a trackable object exists for the current
-			# object ID
-			to = self.trackableObjects.get(objectID, None)
-
-			# if there is no existing trackable object, create one
-			if to is None:
-				to = TrackableObject(objectID, centroid)
-
-			if not to.counted:
-				total[to.color] += 1
-				to.counted = True
-
-			# store the trackable object in our dictionary
-			self.trackableObjects[objectID] = to
-
-		return total
-
-	def update(self, rects):
+	def setTrackableObjects(self, figs):
 		# check to see if the list of input bounding box rectangles
 		# is empty
-		if len(rects) == 0:
+		if len(figs) == 0:
 			# loop over any existing tracked objects and mark them
 			# as disappeared
 			for objectID in list(self.disappeared.keys()):
@@ -48,32 +28,38 @@ class Tracker:
 
 			# return early as there are no centroids or tracking info
 			# to update
-			return self.objects
+			return self.trackableObjects
 
 		# initialize an array of input centroids for the current frame
-		inputCentroids = np.zeros((len(rects), 3), dtype="int")
+		inputCentroids = np.zeros((len(figs), 2), dtype="int")
 
+		poli = []
+		bbox = []
 		# loop over the bounding box rectangles
-		for (i, (color, startX, startY, endX, endY)) in enumerate(rects):
+		[bbox.append(f[3]) for f in figs]
+		for (i, (startX, startY, endX, endY)) in enumerate(bbox):
 			# use the bounding box coordinates to derive the centroid
 			cX = int((startX + (startX+endX)) / 2.0)
 			cY = int((startY + (startY+endY)) / 2.0)
 
-			inputCentroids[i] = (color, cX, cY)
+			inputCentroids[i] = (cX, cY)
+
+			poli.append(figs[i][2])
 
 		# if we are currently not tracking any objects take the input
 		# centroids and register each of them
-		if len(self.objects) == 0:
+		if len(self.trackableObjects) == 0:
 			for i in range(0, len(inputCentroids)):
-				self.register(inputCentroids[i])
+				self.register(inputCentroids[i], poli[i], bbox[i])
 
 		# otherwise, are are currently tracking objects so we need to
 		# try to match the input centroids to existing object
 		# centroids
 		else:
 			# grab the set of object IDs and corresponding centroids
-			objectIDs = list(self.objects.keys())
-			objectCentroids = list(self.objects.values())
+			objectIDs = list(self.trackableObjects.keys())
+			objectCentroids = []
+			[objectCentroids.append(self.trackableObjects[i].centroids[0]) for i in objectIDs]
 
 			# compute the distance between each pair of object
 			# centroids and input centroids, respectively -- our
@@ -117,8 +103,12 @@ class Tracker:
 				# set its new centroid, and reset the disappeared
 				# counter
 				objectID = objectIDs[row]
-				self.objects[objectID] = inputCentroids[col]
 				self.disappeared[objectID] = 0
+
+				# Actualiza los bordes y los centros del objeto
+				self.trackableObjects[objectID].setCentroid(inputCentroids[col])
+				self.trackableObjects[objectID].setPoligon(figs[col][2])
+				self.trackableObjects[objectID].setBoundingBox(figs[col][3])
 
 				# indicate that we have examined each of the row and
 				# column indexes, respectively
@@ -153,16 +143,17 @@ class Tracker:
 			# register each new input centroid as a trackable object
 			else:
 				for col in unusedCols:
-					self.register(inputCentroids[col])
+					self.register(inputCentroids[col], poli[i], bbox[i])
 
-	def register(self, centroid):
-		self.objects[self.nextObjectID] = centroid
+	def register(self, centroid, poli, bbox):
 		self.disappeared[self.nextObjectID] = 0
+		to = TrackableObject(self.nextObjectID, centroid, poli, bbox)
+		self.trackableObjects[self.nextObjectID] = to
 		self.nextObjectID += 1
 
 	def deregister(self, objectID):
-		del self.objects[objectID]
 		del self.disappeared[objectID]
+		del self.trackableObjects[objectID]
 
-	def getObjects(self):
-		return self.objects.items()
+	def getTrackableObjects(self):
+		return self.trackableObjects
