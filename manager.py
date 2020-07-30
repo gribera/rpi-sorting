@@ -6,29 +6,34 @@ import formas as formas
 import tracker as tracker
 
 class Manager:
-	trackableObjects = {}
 	vision = vision.Vision()
-	color = colores.Colores()
-	forma = formas.Formas()
+	trackableObjects = {}
 
-	def __init__(self):
+	def __init__(self, modalidad):
+		if modalidad == 'color':
+			self.color = colores.Colores()
+		if modalidad == 'forma':
+			self.forma = formas.Formas()
+
+		self.modalidad = modalidad
 		self.tracker = tracker.Tracker()
 
-	def start(self, modalidad):
+	def start(self):
+
 		while True:
 			self.vision.readFrame()
 			self.vision.rotateImage()
 			self.vision.cutBorders([20, 0], [630, 0], [3, 478], [622, 478], False)
-			frame = self.vision.getFrame()
+			self.frame = self.vision.getFrame()
 
-			imgContours, finalContours = self.getContours(frame, modalidad)
+			imgContours, finalContours = self.getContours()
 
 			if len(finalContours) != 0:
 				self.tracker.setTrackableObjects(finalContours)
 
 				self.trackableObjects = self.tracker.getTrackableObjects()
 
-				self.showInfo(imgContours, modalidad)
+				self.showInfo(imgContours)
 
 			self.vision.showFrame(imgContours)
 
@@ -37,20 +42,20 @@ class Manager:
 
 		self.vision.destroy()
 
-	def getContours(self, frame, modalidad):
-		if modalidad == 'forma':
-			imgContours, finalContours = self.forma.getContours(frame, minArea=1000)
-		if modalidad == 'color':
-			imgContours, finalContours = self.color.getContours(frame, minArea=1000)
+	def getContours(self):
+		if self.modalidad == 'forma':
+			imgContours, finalContours = self.forma.getContours(self.frame, minArea=1000)
+		if self.modalidad == 'color':
+			imgContours, finalContours = self.color.getContours(self.frame, minArea=1000)
 
 		return imgContours, finalContours
 
-	def showInfo(self, imgContours, modalidad):
-		if modalidad == 'forma':
+	def showInfo(self, imgContours):
+		if self.modalidad == 'forma':
 			self.printFormaInfo(imgContours, self.trackableObjects, showID=True, showForma=True,
 							  showCentroid=True, position="center", drawContours=True,
 							  showBoundingRect=False, measure=True)
-		if modalidad == 'color':
+		if self.modalidad == 'color':
 			self.printColorInfo(imgContours, self.trackableObjects, position="right", showCentroid=True,
 								showBoundingRect=True, countItems=True)
 
@@ -61,7 +66,6 @@ class Manager:
 			xDes = 100
 		else:
 			xDes = 20
-
 
 		for key, value in to.items():
 			x = value.getCentroidX()
