@@ -1,14 +1,10 @@
 import numpy as np
-import colores as colores
-import formas as formas
+import manager as manager
 
 class Main:
-	# color = colores.Colores()
-	forma = formas.Formas()
-	rects = []
-	total = 0
+	manager = manager.Manager()
 
 	def __init__(self):
-		self.forma.start()
+		self.manager.start('color')
 
 main = Main()

@@ -50,7 +50,7 @@ class Tracker:
 		# centroids and register each of them
 		if len(self.trackableObjects) == 0:
 			for i in range(0, len(inputCentroids)):
-				self.register(inputCentroids[i], poli[i], bbox[i])
+				self.register(inputCentroids[i], poli[i], bbox[i], figs[i][4])
 
 		# otherwise, are are currently tracking objects so we need to
 		# try to match the input centroids to existing object
@@ -143,11 +143,11 @@ class Tracker:
 			# register each new input centroid as a trackable object
 			else:
 				for col in unusedCols:
-					self.register(inputCentroids[col], poli[i], bbox[i])
+					self.register(inputCentroids[col], poli[i], bbox[i], figs[i][4])
 
-	def register(self, centroid, poli, bbox):
+	def register(self, centroid, poli, bbox, color):
 		self.disappeared[self.nextObjectID] = 0
-		to = TrackableObject(self.nextObjectID, centroid, poli, bbox)
+		to = TrackableObject(self.nextObjectID, centroid, poli, bbox, color)
 		self.trackableObjects[self.nextObjectID] = to
 		self.nextObjectID += 1
 

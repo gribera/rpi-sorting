@@ -1,15 +1,10 @@
 class TrackableObject:
-	color = None
-	forma = None
-	medida = None
-	poli = None
-	bbox = None
-
-	def __init__(self, objectID, centroid, poli, bbox):
+	def __init__(self, objectID, centroid, poli, bbox, color):
 		self.objectID = objectID
 		self.centroids = [centroid]
 		self.poli = poli
 		self.bbox = bbox
+		self.color = color
 		self.counted = False
 
 	def getCentroidX(self):
@@ -35,3 +30,6 @@ class TrackableObject:
 
 	def setMedida(self, medida):
 		self.medida = medida
+
+	def setCounted(self):
+		self.counted = True
