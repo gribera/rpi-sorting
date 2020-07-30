@@ -54,7 +54,7 @@ class Manager:
 			self.printColorInfo(imgContours, self.trackableObjects, position="right", showCentroid=True,
 								showBoundingRect=True, countItems=True)
 
-	def printColorInfo(self, img, to, position="center", showCentroid=False, showBoundingRect=False,
+	def printColorInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
 					   countItems=False, showID=True):
 
 		if position == "right":
@@ -70,11 +70,11 @@ class Manager:
 			if showCentroid == True:
 				self.vision.dibujarPunto(x, y)
 			if showBoundingRect == True:
-				cv2.rectangle(img,(startX,startY),(startX+w,startY+h),
+				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
 					self.color.border_colors[value.color], 3)
 			if showID:
 				text = "ID {}".format(value.objectID)
-				cv2.putText(img, text, (x + xDes, y),
+				cv2.putText(frame, text, (x + xDes, y),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 			if countItems == True:
 				if value.counted == False:
@@ -83,10 +83,10 @@ class Manager:
 
 				for i in range(len(self.color.colores)):
 					text = "{}: {}".format(self.color.colores[i], self.color.total[i])
-					cv2.putText(img, text, (10, ((i * 20) + 20)),
+					cv2.putText(frame, text, (10, ((i * 20) + 20)),
 						cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-	def printFormaInfo(self, img, to, position="center", showCentroid=False, showForma=False,
+	def printFormaInfo(self, frame, to, position="center", showCentroid=False, showForma=False,
 					 showID=False, showBoundingRect=False, drawContours=False, measure=False):
 		if position == "center":
 			xDes = 20
@@ -101,15 +101,15 @@ class Manager:
 			if showCentroid == True:
 				self.vision.dibujarPunto(x, y)
 			if showBoundingRect == True:
-				cv2.rectangle(img,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
+				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
 			if showID == True:
 				text = "ID {}".format(value.objectID)
-				cv2.putText(img, text, (x + xDes, y + yDes),
+				cv2.putText(frame, text, (x + xDes, y + yDes),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 				yDes += 15
 			if showForma == True:
 				text = self.forma.detectShape(len(value.poli))
-				cv2.putText(img, text, (x + xDes, y + yDes),
+				cv2.putText(frame, text, (x + xDes, y + yDes),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 				yDes += 15
 			if measure == True:
@@ -118,8 +118,8 @@ class Manager:
 					mW = round((self.forma.findDis(nPoints[0][0], nPoints[1][0])),1)
 					nH = round((self.forma.findDis(nPoints[0][0], nPoints[2][0])),1)
 
-					cv2.arrowedLine(img, (nPoints[0][0][0],nPoints[0][0][1]), (nPoints[1][0][0], nPoints[1][0][1]), (255,0,255), 2)
-					cv2.arrowedLine(img, (nPoints[0][0][0],nPoints[0][0][1]), (nPoints[2][0][0], nPoints[2][0][1]), (255,0,255), 2)
-					# x, y, w, h = obj[3]
-					cv2.putText(img, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
-					cv2.putText(img, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+					cv2.arrowedLine(frame, (nPoints[0][0][0],nPoints[0][0][1]), (nPoints[1][0][0], nPoints[1][0][1]), (255,0,255), 2)
+					cv2.arrowedLine(frame, (nPoints[0][0][0],nPoints[0][0][1]), (nPoints[2][0][0], nPoints[2][0][1]), (255,0,255), 2)
+
+					cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)

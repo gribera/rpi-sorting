@@ -5,6 +5,6 @@ class Main:
 	manager = manager.Manager()
 
 	def __init__(self):
-		self.manager.start('color')
+		self.manager.start('forma')
 
 main = Main()
