@@ -11,27 +11,30 @@ class Formas:
 		return (((pts2[0]-pts1[0])**2 + (pts2[1]-pts1[1])**2)**0.5)/10
 
 	def detectShape(self, pts):
+		lados = len(pts)
 		forma = ''
-		if (pts == 3):
+		if (lados == 3):
 			forma = 'Triangulo'
-		elif (pts == 4):
-			forma = 'Cuadrado'
-		elif (pts > 6):
+		elif (lados == 4):
+			mW = round((self.findDis(pts[0][0], pts[1][0])),1)
+			nH = round((self.findDis(pts[0][0], pts[2][0])),1)
+			if (mW == nH):
+				forma = 'Cuadrado'
+			else:
+				forma = 'Rectangulo'
+		elif (lados > 6):
 			forma = 'Circulo'
 		else:
 			forma = 'Indefinido'
 
 		return forma
 
-	def getContours(self, img, minArea = 1000, filter=0, draw=True):
+	def getContours(self, img, minArea = 1000):
 		"""
 			Recupera los contornos de los objetos encontrados utilizando Canny.
 
 			img: array, Frame.
 			minArea: int, Área mínima de los objetos a detectar
-			filter: int, Filtro de cantidad de bordes (detecta contornos con la
-													   cantidad de bordes especificada)
-			draw: bool, Muestra los bordes
 		"""
 		imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		imgBlur = cv2.GaussianBlur(imgGray, (5,5), 1)
@@ -50,21 +53,14 @@ class Formas:
 			if area > minArea:
 				per = cv2.arcLength(cnt, True)
 				poli = cv2.approxPolyDP(cnt, 0.02 * per, True)
+				if len(poli) == 4:
+					poli = self.reorder(poli)
 				bbox = cv2.boundingRect(poli)
-				if filter > 0:
-					if len(poli) == filter:
-						finalContours.append([cnt, area, poli, bbox, None])
-				else:
-					finalContours.append([cnt, area, poli, bbox, None])
 
-				finalContours = sorted(finalContours, key = lambda x: x[1], reverse=True)
+				finalContours.append([cnt, area, poli, bbox, None])
 
-		if draw:
-			for con in finalContours:
-				x, y, w, h = con[3]
-				# cv2.rectangle(img,(x,y),(x+w,y+h), (255,0,0), 3)
-				# cv2.polylines(img, con[4], True, (0, 255, 0), 2)
-				# cv2.drawContours(img, con[4], -1, (0, 0, 255), 3)
+
+		finalContours = sorted(finalContours, key = lambda x: x[1], reverse=True)
 
 		return img, finalContours
 

@@ -97,33 +97,35 @@ class Manager:
 		if position == "right":
 			xDes = 100
 
-		for key, value in to.items():
-			x = value.getCentroidX()
-			y = value.getCentroidY()
-			(startX, startY, w, h) = value.bbox
+		for key, obj in to.items():
+			x = obj.getCentroidX()
+			y = obj.getCentroidY()
+			(startX, startY, w, h) = obj.bbox
+			forma = self.forma.detectShape(obj.poli)
 			yDes = 0
 			if showCentroid == True:
 				self.vision.dibujarPunto(x, y)
 			if showBoundingRect == True:
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
 			if showID == True:
-				text = "ID {}".format(value.objectID)
+				text = "ID {}".format(obj.objectID)
 				cv2.putText(frame, text, (x + xDes, y + yDes),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 				yDes += 15
 			if showForma == True:
-				text = self.forma.detectShape(len(value.poli))
-				cv2.putText(frame, text, (x + xDes, y + yDes),
+				cv2.putText(frame, forma, (x + xDes, y + yDes),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 				yDes += 15
 			if measure == True:
-				if self.forma.detectShape(len(value.poli)) == 'Cuadrado':
-					nPoints = self.forma.reorder(value.poli)
-					mW = round((self.forma.findDis(nPoints[0][0], nPoints[1][0])),1)
-					nH = round((self.forma.findDis(nPoints[0][0], nPoints[2][0])),1)
+				if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
+					mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
+					nH = round((self.forma.findDis(obj.poli[0][0], obj.poli[2][0])),1)
 
-					cv2.arrowedLine(frame, (nPoints[0][0][0],nPoints[0][0][1]), (nPoints[1][0][0], nPoints[1][0][1]), (255,0,255), 2)
-					cv2.arrowedLine(frame, (nPoints[0][0][0],nPoints[0][0][1]), (nPoints[2][0][0], nPoints[2][0][1]), (255,0,255), 2)
+					cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
+						(obj.poli[1][0][0], obj.poli[1][0][1]), (255,0,255), 2)
+					cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
+						(obj.poli[2][0][0], obj.poli[2][0][1]), (255,0,255), 2)
 
-					cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+					cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
+						(255,0,255), 2)
 					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
