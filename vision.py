@@ -33,6 +33,13 @@ class Vision:
 		"""
 		return cv2.waitKey(1) & 0xFF == ord(key)
 
+	def getStringData(self, frame):
+		"""
+			Devuelve un string del buffer pasado por parámetro capturado
+		"""
+		imgEncode = cv2.imencode('.jpg', frame)[1]
+		return imgEncode.tostring()
+
 	def rotateImage(self):
 		"""
 			Rota la imágen 90 grados

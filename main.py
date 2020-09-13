@@ -1,10 +1,11 @@
 import numpy as np
 import manager as manager
+import server as server
 
 class Main:
-	manager = manager.Manager('color')
+	server = server.Server()
 
 	def __init__(self):
-		self.manager.start()
+		self.server.start()
 
 main = Main()

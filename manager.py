@@ -19,7 +19,6 @@ class Manager:
 		self.tracker = tracker.Tracker()
 
 	def start(self):
-
 		while True:
 			self.vision.readFrame()
 			self.vision.rotateImage()
@@ -41,6 +40,23 @@ class Manager:
 				break
 
 		self.vision.destroy()
+
+	def getFrame(self):
+		self.vision.readFrame()
+		self.vision.rotateImage()
+		self.vision.cutBorders([20, 0], [630, 0], [3, 478], [622, 478], False)
+		self.frame = self.vision.getFrame()
+
+		imgContours, finalContours = self.getContours()
+
+		if len(finalContours) != 0:
+			self.tracker.setTrackableObjects(finalContours)
+
+			self.trackableObjects = self.tracker.getTrackableObjects()
+
+			self.showInfo(imgContours)
+
+		return self.vision.getStringData(imgContours)
 
 	def getContours(self):
 		if self.modalidad == 'forma':
