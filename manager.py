@@ -10,36 +10,42 @@ class Manager:
 	trackableObjects = {}
 
 	def __init__(self, modalidad):
+		self.tracker = tracker.Tracker()
+		self.iniciarObjeto(modalidad)
+		self.modalidad = modalidad
+
+
+	def iniciarObjeto(self, modalidad):
 		if modalidad == 'color':
 			self.color = colores.Colores()
 		if modalidad == 'forma':
 			self.forma = formas.Formas()
+		if self.tracker:
+			del self.tracker
+			self.tracker = tracker.Tracker()
 
-		self.modalidad = modalidad
-		self.tracker = tracker.Tracker()
+	# def start(self):
+	# 	while True:
+	# 		self.vision.readFrame()
+	# 		self.vision.rotateImage()
+	# 		self.vision.cutBorders([20, 0], [630, 0], [3, 478], [622, 478], False)
+	# 		self.frame = self.vision.getFrame()
 
-	def start(self):
-		while True:
-			self.vision.readFrame()
-			self.vision.rotateImage()
-			self.vision.cutBorders([20, 0], [630, 0], [3, 478], [622, 478], False)
-			self.frame = self.vision.getFrame()
+	# 		imgContours, finalContours = self.getContours()
 
-			imgContours, finalContours = self.getContours()
+	# 		if len(finalContours) != 0:
+	# 			self.tracker.setTrackableObjects(finalContours)
 
-			if len(finalContours) != 0:
-				self.tracker.setTrackableObjects(finalContours)
+	# 			self.trackableObjects = self.tracker.getTrackableObjects()
 
-				self.trackableObjects = self.tracker.getTrackableObjects()
+	# 			self.showInfo(imgContours)
 
-				self.showInfo(imgContours)
+	# 		self.vision.showFrame(imgContours)
 
-			self.vision.showFrame(imgContours)
+	# 		if self.vision.waitForKey('s'):
+	# 			break
 
-			if self.vision.waitForKey('s'):
-				break
-
-		self.vision.destroy()
+	# 	self.vision.destroy()
 
 	def getFrame(self):
 		self.vision.readFrame()
@@ -57,6 +63,15 @@ class Manager:
 			self.showInfo(imgContours)
 
 		return self.vision.getStringData(imgContours)
+
+	def cambioModo(self, modo):
+		"""
+			Cambia modo de trabajo
+
+			modo: string, Modo de trabajo [color, forma]
+		"""
+		self.iniciarObjeto(modo)
+		self.modalidad = modo
 
 	def getContours(self):
 		if self.modalidad == 'forma':
