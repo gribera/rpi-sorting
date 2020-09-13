@@ -5,6 +5,9 @@ from trackable_object import TrackableObject
 
 class Tracker:
 	def __init__(self, maxDisappeared=50, maxDistance=50):
+		self.initializeTrackableObjects(maxDisappeared, maxDistance)
+
+	def initializeTrackableObjects(self, maxDisappeared=50, maxDistance=50):
 		self.nextObjectID = 0
 		self.disappeared = OrderedDict()
 		self.maxDisappeared = maxDisappeared
