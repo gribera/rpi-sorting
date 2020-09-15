@@ -2,7 +2,7 @@ import manager as manager
 from flask import Flask, Response, render_template
 
 manager = manager.Manager('forma')
-app = Flask(__name__, template_folder='./server/')
+app = Flask(__name__, template_folder='./frontend/')
 streaming = True
 
 def stream():
