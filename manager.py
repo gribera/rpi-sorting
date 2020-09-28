@@ -1,15 +1,18 @@
+
 import cv2
 import numpy as np
 import vision as vision
 import colores as colores
 import formas as formas
 import tracker as tracker
+import cinta as cinta
 
 class Manager:
 	vision = vision.Vision()
 	trackableObjects = {}
 
 	def __init__(self, modalidad):
+		self.cinta = cinta.Cinta()
 		self.tracker = tracker.Tracker()
 		self.iniciarObjeto(modalidad)
 		self.modalidad = modalidad
@@ -53,6 +56,9 @@ class Manager:
 		self.vision.cutBorders([20, 0], [630, 0], [3, 478], [622, 478], False)
 		self.frame = self.vision.getFrame()
 
+		# Parámetros por defecto de las vistas
+		self.showID = True
+
 		imgContours, finalContours = self.getContours()
 
 		if len(finalContours) != 0:
@@ -83,11 +89,11 @@ class Manager:
 
 	def showInfo(self, imgContours):
 		if self.modalidad == 'forma':
-			self.printFormaInfo(imgContours, self.trackableObjects, showID=True, showForma=True,
+			self.printFormaInfo(imgContours, self.trackableObjects, showID=self.showID, showForma=True,
 							  showCentroid=True, position="center", drawContours=True,
 							  showBoundingRect=False, measure=True)
 		if self.modalidad == 'color':
-			self.printColorInfo(imgContours, self.trackableObjects, position="right", showCentroid=True,
+			self.printColorInfo(imgContours, self.trackableObjects, showID=self.showID, position="right", showCentroid=True,
 								showBoundingRect=True, countItems=True)
 
 	def printColorInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
@@ -160,3 +166,12 @@ class Manager:
 					cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
 						(255,0,255), 2)
 					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+
+	def moverCinta(self, velocidad):
+		self.cinta.setVelocidad(velocidad)
+
+	def cambiarDireccionCinta(self):
+		self.cinta.setDireccion()
+
+	def toggleShowID(self):
+		self.showID = not self.showID
