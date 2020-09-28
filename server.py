@@ -2,7 +2,7 @@ import manager as manager
 from flask import Flask, Response, render_template
 
 manager = manager.Manager('forma')
-app = Flask(__name__, template_folder='./frontend/')
+app = Flask(__name__, template_folder='./frontend/', static_url_path="/")
 streaming = True
 
 def stream():
@@ -45,6 +45,24 @@ def stopStream():
 
     streaming = False
 
+    return 'OK'
+
+@app.route('/velocidad/<velocidad>')
+def velocidad(velocidad):
+    global manager
+    manager.moverCinta(velocidad)
+    return 'OK'
+
+@app.route('/direccion')
+def direccion():
+    global manager
+    manager.cambiarDireccionCinta()
+    return 'OK'
+
+@app.route('/params/showID')
+def showID():
+    global manager
+    manager.toggleShowID()
     return 'OK'
 
 if __name__ == '__main__':
