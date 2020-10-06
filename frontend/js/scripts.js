@@ -1,9 +1,6 @@
 $(document).ready(function () {
 	let selectedValue = null;
 
-	$("#opciones1").html($("#opciones-comunes").html())
-	$("#opciones2").html($("#opciones-comunes").html())
-
 	$("#streaming-switch").change(function () {
 		if ($(this).prop("checked") == true) {
 			$.getJSON('/start');
@@ -19,8 +16,8 @@ $(document).ready(function () {
 		$.getJSON('/direccion');
 	});
 
-	$('a#cambio-modo').bind('click', function () {
-		const modo = $(this)[0].name
+	$("input[name=modo]").click(function () {
+		const modo = $(this).val()
 
 		$.ajax({
 			url: '/modo/' + modo,
@@ -29,7 +26,7 @@ $(document).ready(function () {
 			dataType: 'json',
 			contentType: "application/json; charset=utf-8",
 			success: function (wsQuery) {
-					console.log(wsQuery)
+				console.log(wsQuery)
 			}
 		})
 	});
@@ -49,6 +46,26 @@ $(document).ready(function () {
 
 	$('#chk-show-id').change(function () {
 		$.getJSON('/params/showID')
+	});
+
+	$('#chk-show-centroid').change(function () {
+		$.getJSON('/params/showCentroid')
+	});
+
+	$('#chk-draw-contours').change(function () {
+		$.getJSON('/params/drawContours')
+	});
+
+	$('#chk-show-forma').change(function () {
+		$.getJSON('/params/showForma')
+	});
+
+	$('#chk-show-bounding-rect').change(function () {
+		$.getJSON('/params/showBoundingRect')
+	});
+
+	$('#chk-show-measure').change(function () {
+		$.getJSON('/params/showMeasure')
 	});
 
 	const _getOptions = () => {

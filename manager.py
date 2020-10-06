@@ -164,3 +164,18 @@ class Manager:
 
 	def toggleShowID(self):
 		self.showID = not self.showID
+
+	def toggleShowCentroid(self):
+		self.showCentroid = not self.showCentroid
+
+	def toggleDrawContours(self):
+		self.drawContours = not self.drawContours
+
+	def toggleShowForma(self):
+		self.showForma = not self.showForma
+
+	def toggleShowBoundingRect(self):
+		self.showBoundingRect = not self.showBoundingRect
+
+	def toggleShowMeasure(self):
+		self.measure = not self.measure

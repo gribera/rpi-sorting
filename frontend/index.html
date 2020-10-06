@@ -28,6 +28,7 @@
 							</div>
 						</div>
 						<div class="col">
+							<label for="velocidad-cinta">Velocidad</label>
 							<input id="velocidad-cinta"
 										 data-slider-id='velocidad-slider'
 										 type="text"
@@ -43,48 +44,53 @@
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<hr>
-					</div>
-					<div class="row p-2 full-width-tabs">
-						<ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
-							<li class="nav-item">
-								<a class="nav-link active"
-									 id="cambio-modo"
-									 data-toggle="tab"
-									 name="color"
-									 href="#color"
-									 role="tab"
-									 aria-controls="profile"
-									 aria-selected="true">
-									 Color
-								</a>
-						  </li>
-							<li class="nav-item">
-								<a class="nav-link"
-									 id="cambio-modo"
-									 data-toggle="tab"
-									 name="forma"
-									 href="#forma"
-									 role="tab"
-									 aria-controls="home"
-									 aria-selected="false">
-									 Forma
-								</a>
-							</li>
-						</ul>
-					</div>
-					<div class="tab-content">
-					  <div class="tab-pane fade show active row p-2" id="color" role="tabpanel">
-							<div id="opciones1"></div>
+					<div class="row mt-2 p-3">
+						<div class="col">Detección: </div>
+						<div class="col form-check">
+							<input class="form-check-input"
+										 type="radio"
+										 id="color"
+										 name="modo"
+										 value="color"
+										 checked>
+							<label class="form-check-label" for="color">
+								Color
+							</label>
 						</div>
-					  <div class="tab-pane fade row p-2" id="forma" role="tabpanel">
-							<div id="opciones2"></div>
-							<div>
+						<div class="col form-check">
+							<input class="form-check-input"
+										 type="radio"
+										 id="forma"
+										 name="modo"
+										 value="forma">
+							<label class="form-check-label" for="forma">
+								Forma
+							</label>
+						</div>
+					</div>
+					<div class="row mt-2 p-3">
+						<div class="col">
+							<div class="row">
+								<input type="checkbox" class="form-check-input" id="chk-show-id">
+								<label class="form-check-label" for="chk-show-id">Mostrar ID del objeto</label>
+							</div>
+							<div class="row">
+								<input type="checkbox" class="form-check-input" id="chk-show-centroid">
+								<label class="form-check-label" for="chk-show-centroid">Mostrar centro del objeto</label>
+							</div>
+							<div class="row">
+								<input type="checkbox" class="form-check-input" id="chk-draw-contours">
+								<label class="form-check-label" for="chk-draw-contours">Dibujar contornos</label>
+							</div>
+							<div class="row">
+								<input type="checkbox" class="form-check-input" id="chk-show-bounding-rect">
+								<label class="form-check-label" for="chk-show-bounding-rect">Mostrar rectángulo de objeto</label>
+							</div>
+							<div class="row">
 								<input type="checkbox" class="form-check-input" id="chk-show-forma">
 								<label class="form-check-label" for="chk-show-forma">Mostrar forma</label>
 							</div>
-							<div>
+							<div class="row">
 								<input type="checkbox" class="form-check-input" id="chk-show-measure">
 								<label class="form-check-label" for="chk-show-measure">Mostrar medida</label>
 							</div>
@@ -95,23 +101,3 @@
 		</div>
 	</body>
 </html>
-
-<!-- Opciones Comunes -->
-<div id="opciones-comunes" class="ocultar">
-	<div>
-		<input type="checkbox" class="form-check-input" id="chk-show-id">
-		<label class="form-check-label" for="chk-show-id">Mostrar ID del objeto</label>
-	</div>
-	<div>
-		<input type="checkbox" class="form-check-input" id="chk-show-centroid">
-		<label class="form-check-label" for="chk-show-centroid">Mostrar centro del objeto</label>
-	</div>
-	<div>
-		<input type="checkbox" class="form-check-input" id="chk-draw-contours">
-		<label class="form-check-label" for="chk-draw-contours">Dibujar contornos</label>
-	</div>
-	<div>
-		<input type="checkbox" class="form-check-input" id="chk-show-bounding-rect">
-		<label class="form-check-label" for="chk-show-bounding-rect">Mostrar rectángulo de objeto</label>
-	</div>
-</div>

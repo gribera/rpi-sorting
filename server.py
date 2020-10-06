@@ -70,5 +70,35 @@ def showID():
 	manager.toggleShowID()
 	return 'OK'
 
+@app.route('/params/showCentroid')
+def showCentroid():
+	global manager
+	manager.toggleShowCentroid()
+	return 'OK'
+
+@app.route('/params/drawContours')
+def drawContours():
+	global manager
+	manager.toggleDrawContours()
+	return 'OK'
+
+@app.route('/params/showForma')
+def showForma():
+	global manager
+	manager.toggleShowForma()
+	return 'OK'
+
+@app.route('/params/showBoundingRect')
+def showBoundingRect():
+	global manager
+	manager.toggleShowBoundingRect()
+	return 'OK'
+
+@app.route('/params/showMeasure')
+def showMeasure():
+	global manager
+	manager.toggleShowMeasure()
+	return 'OK'
+
 if __name__ == '__main__':
 	start()
