@@ -68,6 +68,11 @@ $(document).ready(function () {
 		$.getJSON('/params/showMeasure')
 	});
 
+	$('#chk-show-mask').click(function () {
+		$.getJSON('/params/showMask')
+	});
+
+
 	const _getOptions = () => {
 		return {
 			showID: $('#chk-show-id').prop('checked'),
@@ -75,7 +80,8 @@ $(document).ready(function () {
 			drawContours: $('#chk-draw-contours').prop('checked'),
 			showForma: $('#chk-show-forma').prop('checked'),
 			showBoundingRect: $('#chk-show-bounding-rect').prop('checked'),
-			showMeasure: $('#chk-show-measure').prop('checked') || false
+			showMeasure: $('#chk-show-measure').prop('checked'),
+			showMeasure: $('#chk-show-mask').prop('checked')
 		}
 	}
 });

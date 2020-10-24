@@ -1,7 +1,7 @@
 import manager as manager
 from flask import Flask, Response, request, render_template
 
-manager = manager.Manager('forma')
+manager = manager.Manager('color')
 app = Flask(__name__,
 			static_folder="frontend",
 			template_folder='frontend')
@@ -98,6 +98,12 @@ def showBoundingRect():
 def showMeasure():
 	global manager
 	manager.toggleShowMeasure()
+	return 'OK'
+
+@app.route('/params/showMask')
+def showMask():
+	global manager
+	manager.toggleShowMask()
 	return 'OK'
 
 if __name__ == '__main__':

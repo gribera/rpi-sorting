@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css" integrity="sha512-3q8fi8M0VS+X/3n64Ndpp6Bit7oXSiyCnzmlx6IDBLGlY5euFySyJ46RUlqIVs0DPCGOypqP8IRk/EyPvU28mQ==" crossorigin="anonymous" />
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/styles.css', v=0.02) }}" />
-		<script src="{{url_for('static', filename='js/scripts.js', v=0.07)}}"></script>
+		<script src="{{url_for('static', filename='js/scripts.js', v=0.08)}}"></script>
 		<script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js" integrity="sha512-f0VlzJbcEB6KiW8ZVtL+5HWPDyW1+nJEjguZ5IVnSQkvZbwBt2RfCBY0CBO1PsMAqxxrG4Di6TfsCPP3ZRwKpA==" crossorigin="anonymous"></script>
 	</head>
@@ -14,7 +14,13 @@
 		<div class="container-fluid min-100">
 			<div class="row min-100">
 				<div class="col p-3">
-					<img id="video-frame" src="">
+					<div class="row">
+						<img id="video-frame" src="">
+					</div>
+					<div class="row ml-4">
+						<input type="checkbox" class="form-check-input" id="chk-show-mask">
+						<label class="form-check-label" for="chk-show-mask">Mostrar máscara</label>
+					</div>
 				</div>
 				<div class="col min-100">
 					<div class="row p-2 justify-content-md-center">

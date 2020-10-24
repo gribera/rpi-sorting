@@ -29,7 +29,6 @@ class Colores:
 
 	def __init__(self):
 		self.tracker = tracker.Tracker()
-		self.frame = None;
 
 	def maskFrame(self, frameHSV):
 		"""
@@ -44,17 +43,36 @@ class Colores:
 				cv2.inRange(frameHSV, self.red1_lower, self.red1_upper),
 				cv2.inRange(frameHSV, self.red2_lower, self.red2_upper)
 			)
-		return masks
+		combinedMasks = self.combineMasks(masks)
+		return masks, combinedMasks
 
-	def getContours(self, frame, minArea = 1000):
+	def combineMasks(self, masks):
+		"""
+			Junta todas las máscaras en un solo frame.
+
+			masks: array, Array con las máscaras de cada color.
+		"""
+
+		imgW, imgH = h, w = masks[0].shape
+		result = np.zeros((imgW, imgH))
+
+		for i in range(len(masks)):
+			result += masks[i]
+
+		result = result.clip(0, 255).astype("uint8")
+
+		return result
+
+	def getContours(self, frame, minArea=1000, returnMask=False):
 		"""
 			Recupera los contornos de los objetos de acuerdo a las máscaras de color.
 
 			frame: array, Frame.
 			minArea: int, Área mínima de los objetos a detectar
+			returnMask: boolean, Indica si devuelve el frame o la máscara
 		"""
 		frameHSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-		masks = self.maskFrame(frameHSV)
+		masks, combinedMasks = self.maskFrame(frameHSV)
 
 		finalContours = []
 		for mask in range(len(masks)):
@@ -71,4 +89,7 @@ class Colores:
 
 		finalContours = sorted(finalContours, key = lambda x: x[1], reverse=True)
 
-		return frame, finalContours
+		if returnMask:
+			return combinedMasks, finalContours
+		else:
+			return frame, finalContours

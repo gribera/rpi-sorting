@@ -22,7 +22,7 @@ class Manager:
 
 	def setVariables(self, showID=False, showCentroid=False, position="center",
 					 drawContours=False, showForma=False, showBoundingRect=False,
-					 measure=False, counting=False):
+					 measure=False, counting=False, showMask=False):
 		self.showID = showID
 		self.showCentroid = showCentroid
 		self.position = position
@@ -31,6 +31,7 @@ class Manager:
 		self.counting = counting
 		self.showForma = showForma
 		self.measure = measure
+		self.showMask = showMask
 
 	def iniciarObjeto(self, modalidad):
 		if modalidad == 'color':
@@ -69,9 +70,9 @@ class Manager:
 
 	def getContours(self):
 		if self.modalidad == 'forma':
-			imgContours, finalContours = self.forma.getContours(self.frame, minArea=1000)
+			imgContours, finalContours = self.forma.getContours(self.frame, returnMask=self.showMask)
 		if self.modalidad == 'color':
-			imgContours, finalContours = self.color.getContours(self.frame, minArea=1000)
+			imgContours, finalContours = self.color.getContours(self.frame, returnMask=self.showMask)
 
 		return imgContours, finalContours
 
@@ -179,3 +180,6 @@ class Manager:
 
 	def toggleShowMeasure(self):
 		self.measure = not self.measure
+
+	def toggleShowMask(self):
+		self.showMask = not self.showMask

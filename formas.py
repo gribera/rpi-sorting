@@ -29,14 +29,15 @@ class Formas:
 
 		return forma
 
-	def getContours(self, img, minArea = 1000):
+	def getContours(self, frame, minArea=1000, returnMask=False):
 		"""
 			Recupera los contornos de los objetos encontrados utilizando Canny.
 
-			img: array, Frame.
+			frame: array, Frame.
 			minArea: int, Área mínima de los objetos a detectar
+			returnMask: boolean, Indica si devuelve el frame o la máscara
 		"""
-		imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		imgGray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		imgBlur = cv2.GaussianBlur(imgGray, (5,5), 1)
 
 		imgCanny = cv2.Canny(imgBlur, 11, 100)
@@ -62,7 +63,10 @@ class Formas:
 
 		finalContours = sorted(finalContours, key = lambda x: x[1], reverse=True)
 
-		return img, finalContours
+		if returnMask:
+			return imgThre, finalContours
+		else:
+			return frame, finalContours
 
 
 	def reorder(self, points):
