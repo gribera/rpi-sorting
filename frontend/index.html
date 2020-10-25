@@ -15,12 +15,15 @@
 		<div class="container-fluid min-100">
 			<div class="row min-100">
 				<div class="col p-3">
-					<div class="row">
-						<img id="video-frame" src="">
-					</div>
-					<div id="video-options" class="row ml-4">
-						<input type="checkbox" class="form-check-input" id="chk-show-mask">
-						<label class="form-check-label" for="chk-show-mask">Mostrar máscara</label>
+					<!-- <img src="{{url_for('static', filename='assets/spinner.svg')}}" alt="Cargando"> -->
+					<div id="video">
+						<div class="row">
+							<img id="video-frame" src="">
+						</div>
+						<div class="row ml-4">
+							<input type="checkbox" class="form-check-input" id="chk-show-mask">
+							<label class="form-check-label" for="chk-show-mask">Mostrar máscara</label>
+						</div>
 					</div>
 				</div>
 				<div class="col min-100">
@@ -74,9 +77,19 @@
 								Forma
 							</label>
 						</div>
+						<div class="col form-check">
+							<input class="form-check-input"
+										 type="radio"
+										 id="codigo"
+										 name="modo"
+										 value="codigo">
+							<label class="form-check-label" for="codigo">
+								Código
+							</label>
+						</div>
 					</div>
 					<div class="row mt-2 p-3">
-						<div class="col">
+						<div id="custom-options" class="col">
 							<div class="row">
 								<input type="checkbox" class="form-check-input" id="chk-show-id">
 								<label class="form-check-label" for="chk-show-id">Mostrar ID del objeto</label>

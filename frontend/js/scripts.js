@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
 	let selectedValue = null;
 
@@ -7,37 +8,25 @@ $(document).ready(function () {
 		socket.emit('message', {data: 'I\'m connected!'});
 	});
 
-	// Se esconden opciones de video
 	$('#video').hide()
 
-  $("#video-frame")[0].onload = function() {
-    console.log("done");
-  }
-
 	$('#streaming-switch').change(function () {
-		if ($(this).prop('checked') === true) {
+		const stream = $(this).prop('checked')
+		if (stream === true) {
 			$.getJSON('/start');
-			$('#video-frame').fadeOut(500)
-												.delay(600)
-												.queue(function(next) {
-													$('#video').show()
-													$(this).attr('src', '/video')
-													next()
-												})
-												.delay(600)
-												.fadeIn(500);
+			$('#video-frame').queue(function(next) {
+				$(this).attr('src', '/video')
+				$('#video').show()
+				next()
+			})
 		}
 		else {
 			$.getJSON('/stop');
-			$('#video-frame').fadeOut(500)
-												.delay(600)
-												.queue(function(next) {
-													$(this).attr('src', '')
-													$('#video').hide()
-													next()
-												})
-												.delay(600)
-												.fadeIn(500);
+			$('#video-frame').queue(function(next) {
+				$(this).attr('src', '')
+				$('#video').hide()
+				next()
+			})
 		}
 	});
 
@@ -47,6 +36,8 @@ $(document).ready(function () {
 
 	$("input[name=modo]").click(function () {
 		const modo = $(this).val()
+
+		_cambioModo(modo)
 
 		$.ajax({
 			url: '/modo/' + modo,
@@ -113,5 +104,25 @@ $(document).ready(function () {
 			showMask: $('#chk-show-mask').prop('checked')
 		}
 	}
-});
 
+	const _cambioModo = (modo) => {
+		const commonOptions = ['chk-show-id', 'chk-show-centroid',
+													 'chk-draw-contours', 'chk-show-bounding-rect', 'chk-show-mask']
+		const opcionesModos = {
+			color: [...commonOptions],
+			forma: [...commonOptions, 'chk-show-forma', 'chk-show-measure'],
+			codigo: [...commonOptions]
+		}
+
+ 		$("#custom-options div").each(function(){
+ 			const chk = $(this).children()[0].id
+			const found = opcionesModos[modo].find(m => m === chk);
+			if (!found)
+				$(this).hide(500)
+			else
+				$(this).show(500)
+ 		});
+	}
+
+	_cambioModo('color')
+});
