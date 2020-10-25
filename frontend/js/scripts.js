@@ -87,7 +87,7 @@ $(document).ready(function () {
 			showForma: $('#chk-show-forma').prop('checked'),
 			showBoundingRect: $('#chk-show-bounding-rect').prop('checked'),
 			showMeasure: $('#chk-show-measure').prop('checked'),
-			showMeasure: $('#chk-show-mask').prop('checked')
+			showMask: $('#chk-show-mask').prop('checked')
 		}
 	}
 });

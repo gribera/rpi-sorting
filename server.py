@@ -10,8 +10,7 @@ streaming = True
 @app.after_request
 def add_header(r):
     """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
+    Deshabilita cache
     """
     r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, public, max-age=0'
     r.headers['Pragma'] = 'no-cache'
@@ -45,7 +44,8 @@ def cambiarModo(modo):
 						 drawContours=params["drawContours"],
 						 showForma=params["showForma"],
 						 showBoundingRect=params["showBoundingRect"],
-						 measure=params["showMeasure"])
+						 measure=params["showMeasure"],
+						 showMask=params["showMask"])
 	manager.cambioModo(modo)
 	return modo
 
