@@ -7,6 +7,17 @@ app = Flask(__name__,
 			template_folder='frontend')
 streaming = True
 
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, public, max-age=0'
+    r.headers['Pragma'] = 'no-cache'
+    r.headers['Expires'] = '0'
+    return r
+
 def stream():
 	global streaming
 
