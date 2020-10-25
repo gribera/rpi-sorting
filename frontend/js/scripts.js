@@ -1,20 +1,43 @@
 $(document).ready(function () {
 	let selectedValue = null;
 
+	var socket = io()
+
+	socket.on('connect', function() {
+		socket.emit('message', {data: 'I\'m connected!'});
+	});
+
 	// Se esconden opciones de video
-	$('#video-options').hide()
+	$('#video').hide()
+
+  $("#video-frame")[0].onload = function() {
+    console.log("done");
+  }
 
 	$('#streaming-switch').change(function () {
-		$('#video-options').hide()
-		if ($(this).prop('checked') == true) {
+		if ($(this).prop('checked') === true) {
 			$.getJSON('/start');
-			$('#video-frame').attr('src', '/video')
-			$('#video-options').show(1000)
+			$('#video-frame').fadeOut(500)
+												.delay(600)
+												.queue(function(next) {
+													$('#video').show()
+													$(this).attr('src', '/video')
+													next()
+												})
+												.delay(600)
+												.fadeIn(500);
 		}
 		else {
 			$.getJSON('/stop');
-			$('#video-frame').attr('src', '')
-			$('#video-options').hide(0)
+			$('#video-frame').fadeOut(500)
+												.delay(600)
+												.queue(function(next) {
+													$(this).attr('src', '')
+													$('#video').hide()
+													next()
+												})
+												.delay(600)
+												.fadeIn(500);
 		}
 	});
 

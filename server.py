@@ -1,10 +1,15 @@
 import manager as manager
 from flask import Flask, Response, request, render_template
+from flask_socketio import SocketIO
 
 manager = manager.Manager('color')
 app = Flask(__name__,
 			static_folder="frontend",
 			template_folder='frontend')
+
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, logger=True)
+
 streaming = True
 
 @app.after_request
@@ -25,7 +30,7 @@ def stream():
 		yield(b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
 
 def start():
-	app.run(host='0.0.0.0')
+	socketio.run(app, host='0.0.0.0')
 
 @app.route('/video')
 def video():
@@ -116,6 +121,10 @@ def showMask():
 	global manager
 	manager.toggleShowMask()
 	return 'OK'
+
+@socketio.on('message')
+def handle_message(message):
+    print(message)
 
 if __name__ == '__main__':
 	start()
