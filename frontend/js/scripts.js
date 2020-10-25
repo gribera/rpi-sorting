@@ -1,14 +1,20 @@
 $(document).ready(function () {
 	let selectedValue = null;
 
-	$("#streaming-switch").change(function () {
-		if ($(this).prop("checked") == true) {
+	// Se esconden opciones de video
+	$('#video-options').hide()
+
+	$('#streaming-switch').change(function () {
+		$('#video-options').hide()
+		if ($(this).prop('checked') == true) {
 			$.getJSON('/start');
-			$("#video-frame").attr("src", "/video");
+			$('#video-frame').attr('src', '/video')
+			$('#video-options').show(1000)
 		}
 		else {
 			$.getJSON('/stop');
-			$("#video-frame").attr("src", "");
+			$('#video-frame').attr('src', '')
+			$('#video-options').hide(0)
 		}
 	});
 
