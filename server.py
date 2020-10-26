@@ -1,6 +1,6 @@
 import manager as manager
 from flask import Flask, Response, request, render_template
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, send, emit
 
 manager = manager.Manager('color')
 app = Flask(__name__,
@@ -8,7 +8,7 @@ app = Flask(__name__,
 			template_folder='frontend')
 
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, logger=True)
+socketio = SocketIO(app) # , logger=True
 
 streaming = True
 
@@ -125,6 +125,7 @@ def showMask():
 @socketio.on('message')
 def handle_message(message):
     print(message)
+    emit('colores', manager.getColorRanges())
 
 if __name__ == '__main__':
 	start()

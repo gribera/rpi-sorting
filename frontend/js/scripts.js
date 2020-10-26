@@ -6,6 +6,11 @@ $(document).ready(function () {
 
 	socket.on('connect', function() {
 		socket.emit('message', {data: 'I\'m connected!'});
+
+		socket.on('colores', function(colores) {
+			console.log(JSON.parse(colores))
+		})
+
 	});
 
 	$('#video').hide()
@@ -92,6 +97,21 @@ $(document).ready(function () {
 		$.getJSON('/params/showMask')
 	});
 
+	$('#red').slider({
+		formatter: function (value) {
+			return 'Current value: ' + value;
+		}
+	});
+	$('#green').slider({
+		formatter: function (value) {
+			return 'Current value: ' + value;
+		}
+	});
+	$('#blue').slider({
+		formatter: function (value) {
+			return 'Current value: ' + value;
+		}
+	});
 
 	const _getOptions = () => {
 		return {
@@ -109,13 +129,17 @@ $(document).ready(function () {
 		const commonOptions = ['chk-show-id', 'chk-show-centroid',
 													 'chk-draw-contours', 'chk-show-bounding-rect', 'chk-show-mask']
 		const opcionesModos = {
-			color: [...commonOptions],
+			color: [...commonOptions, 'config-color'],
 			forma: [...commonOptions, 'chk-show-forma', 'chk-show-measure'],
 			codigo: [...commonOptions]
 		}
 
  		$("#custom-options div").each(function(){
- 			const chk = $(this).children()[0].id
+ 			const chk = ($(this).children()[0]||{}).id ||null
+
+ 			if (!chk)
+ 				return
+
 			const found = opcionesModos[modo].find(m => m === chk);
 			if (!found)
 				$(this).hide(500)

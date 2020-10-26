@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import json
 from collections import OrderedDict
 import tracker as tracker
 
@@ -93,3 +94,20 @@ class Colores:
 			return combinedMasks, finalContours
 		else:
 			return frame, finalContours
+
+	def getColorRanges(self):
+		colors = {
+		  "red": {
+		  	"lower": [self.red1_lower.tolist(), self.red2_lower.tolist()],
+		  	"upper": [self.red1_upper.tolist(), self.red2_upper.tolist()]
+		  },
+		  "blue": {
+		  	"lower": [self.blue_lower.tolist()],
+		  	"upper": [self.blue_upper.tolist()]
+		  },
+		  "yellow": {
+		  	"lower": [self.yellow_lower.tolist()],
+		  	"upper": [self.yellow_upper.tolist()]
+		  }
+		}
+		return json.dumps(colors)

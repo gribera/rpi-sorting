@@ -183,3 +183,6 @@ class Manager:
 
 	def toggleShowMask(self):
 		self.showMask = not self.showMask
+
+	def getColorRanges(self):
+		return self.color.getColorRanges()
