@@ -1,16 +1,15 @@
+var colorRanges = {}
 
 $(document).ready(function () {
-	let selectedValue = null;
-
 	var socket = io()
+	let selectedValue = null;
 
 	socket.on('connect', function() {
 		socket.emit('message', {data: 'I\'m connected!'});
 
-		socket.on('colores', function(colores) {
-			console.log(JSON.parse(colores))
+		socket.on('colores', function(rangos) {
+			colorRanges = JSON.parse(rangos)
 		})
-
 	});
 
 	$('#video').hide()
@@ -35,11 +34,11 @@ $(document).ready(function () {
 		}
 	});
 
-	$("#direction-switch").change(function () {
+	$('#direction-switch').change(function () {
 		$.getJSON('/direccion');
 	});
 
-	$("input[name=modo]").click(function () {
+	$('input[name=modo]').click(function () {
 		const modo = $(this).val()
 
 		_cambioModo(modo)
@@ -97,22 +96,6 @@ $(document).ready(function () {
 		$.getJSON('/params/showMask')
 	});
 
-	$('#red').slider({
-		formatter: function (value) {
-			return 'Current value: ' + value;
-		}
-	});
-	$('#green').slider({
-		formatter: function (value) {
-			return 'Current value: ' + value;
-		}
-	});
-	$('#blue').slider({
-		formatter: function (value) {
-			return 'Current value: ' + value;
-		}
-	});
-
 	const _getOptions = () => {
 		return {
 			showID: $('#chk-show-id').prop('checked'),
@@ -134,19 +117,30 @@ $(document).ready(function () {
 			codigo: [...commonOptions]
 		}
 
- 		$("#custom-options div").each(function(){
- 			const chk = ($(this).children()[0]||{}).id ||null
+ 		$('#custom-options div').each(function(){
+ 			const chk = ($(this).children()[0]||{}).id || null
 
  			if (!chk)
  				return
 
 			const found = opcionesModos[modo].find(m => m === chk);
 			if (!found)
-				$(this).hide(500)
+				$(this).hide(500);
 			else
-				$(this).show(500)
+				$(this).show(500);
  		});
 	}
 
 	_cambioModo('color')
+
+	// TODO: Tira error al presionar 2 veces el botón.
+	$('#config-color').click(function (event) {
+		var target = $('#config');
+		target.load('/config-colores', function() {
+			target.slideDown('fast')
+		});
+
+		event.preventDefault();
+	});
+
 });

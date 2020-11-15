@@ -40,6 +40,10 @@ def video():
 def main():
 	return render_template('./index.html')
 
+@app.route('/config-colores')
+def info():
+    return render_template('./views/config-colores.html')
+
 @app.route('/modo/<modo>', methods=['GET', 'POST'])
 def cambiarModo(modo):
 	global manager
