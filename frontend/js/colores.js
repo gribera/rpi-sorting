@@ -3,7 +3,7 @@ let inHTML = ''
 let sliders = []
 const _genHTMLSlider = (h, val, idSlider) => {
 	return `<div "class="row">
-						<label for="`+val+idSlider+`">`+val+`</label>
+						<label for="`+val+idSlider+`">`+val.replace('-', '').toUpperCase()+`</label>
 						<input id="`+val+idSlider+`"
 									 data-slider-id="s-`+val+idSlider+`"
 									 type="text"
