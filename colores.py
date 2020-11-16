@@ -96,6 +96,9 @@ class Colores:
 			return frame, finalContours
 
 	def getColorRanges(self):
+		"""
+			Devuelve los rangos de color HSV.
+		"""
 		colors = {
 		  "red": {
 		  	"lower": [self.red1_lower.tolist(), self.red2_lower.tolist()],
@@ -113,6 +116,11 @@ class Colores:
 		return json.dumps(colors)
 
 	def setColorRanges(self, colors):
+		"""
+			Setea los rangos de color HSV.
+
+			colors: list, Listacon todos los colores recibidos.
+		"""
 		self.blue_lower = np.array(colors["data"]["blue"]["lower"][0], np.uint8)
 		self.blue_upper = np.array(colors["data"]["blue"]["upper"][0], np.uint8)
 		self.yellow_lower = np.array(colors["data"]["yellow"]["lower"][0], np.uint8)
