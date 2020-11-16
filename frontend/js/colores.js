@@ -1,6 +1,6 @@
-const r = ['h', 's', 'v'];
-let inHTML = '';
-let sliders = [];
+const r = ['h', 's', 'v']
+let inHTML = ''
+let sliders = []
 const _genHTMLSlider = (h, val, idSlider) => {
 	return `<div "class="row">
 						<label for="`+val+idSlider+`">`+val+`</label>
@@ -24,25 +24,16 @@ $.each(colorRanges, function(color, ranges) {
 							   </div>
 							   <div class="row">`
 		$.each(colorRanges[color][index], function(idx, value) {
-			inHTML += `<div class="col align-self-center">`
+			inHTML += `<div class="col align-self-center border">`
 			for (let i = 0; i <= 2; i++) {
-				const strR = r[i]+'-';
-				const idSlider = color + '_' + index + idx
+				const strR = r[i]+'-'
+				const idSlider = color + '-' + index + '-' + idx
 				sliders.push(strR+idSlider)
 				inHTML += _genHTMLSlider(colorRanges[color][index][idx][i],
 																 strR,
 																 idSlider)
 			}
 			inHTML += `</div>`
-										// `+_genHTMLSlider(h, 'h-', idSlider)+`
-										// `+_genHTMLSlider(s, 's-', idSlider)+`
-										// `+_genHTMLSlider(v, 'v-', idSlider)+`
-			// const h = colorRanges[color][index][idx][0];
-			// const s = colorRanges[color][index][idx][1];
-			// const v = colorRanges[color][index][idx][2];
-			// sliders.push('h-'+idSlider)
-			// sliders.push('s-'+idSlider)
-			// sliders.push('v-'+idSlider)
 		})
 		inHTML += `</div></div>`
 	})
@@ -71,9 +62,22 @@ $(document).ready(function () {
 
 	$.each(sliders, function(k, slider) {
 		$('#'+slider).slider({
-			formatter: function (value) {
+			formatter: function (value, id) {
 				return 'Current value: ' + value;
 			}
+		})
+		.on('slideStart', function(ev) {
+	    originalVal = $('#'+slider).data('slider').getValue();
+		})
+		.on('slideStop', function(ev) {
+	    var newVal = $('#'+slider).data('slider').getValue();
+	    if(originalVal != newVal) {
+	      const keys = $(this)[0].id.split('-');
+	      const keyValue = r.findIndex(v => {return v === keys[0]})
+	      colorRanges[keys[1]][keys[2]][keys[3]][keyValue] = newVal
+				socket.emit('message', {data: colorRanges});
+	    }
 		});
 	})
+
 });

@@ -1,8 +1,9 @@
 var colorRanges = {}
+var socket
 
 $(document).ready(function () {
-	var socket = io()
 	let selectedValue = null;
+	socket = io()
 
 	socket.on('connect', function() {
 		socket.emit('message', {data: 'I\'m connected!'});
