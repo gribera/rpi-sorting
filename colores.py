@@ -111,3 +111,13 @@ class Colores:
 		  }
 		}
 		return json.dumps(colors)
+
+	def setColorRanges(self, colors):
+		self.blue_lower = np.array(colors["data"]["blue"]["lower"][0], np.uint8)
+		self.blue_upper = np.array(colors["data"]["blue"]["upper"][0], np.uint8)
+		self.yellow_lower = np.array(colors["data"]["yellow"]["lower"][0], np.uint8)
+		self.yellow_upper = np.array(colors["data"]["yellow"]["upper"][0], np.uint8)
+		self.red1_lower = np.array(colors["data"]["red"]["lower"][0], np.uint8)
+		self.red1_upper = np.array(colors["data"]["red"]["upper"][0], np.uint8)
+		self.red2_lower = np.array(colors["data"]["red"]["lower"][1], np.uint8)
+		self.red2_upper = np.array(colors["data"]["red"]["upper"][1], np.uint8)

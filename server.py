@@ -126,10 +126,13 @@ def showMask():
 	manager.toggleShowMask()
 	return 'OK'
 
-@socketio.on('message')
-def handle_message(message):
-    print(message)
+@socketio.on('getColores')
+def handle_message(msg):
     emit('colores', manager.getColorRanges())
+
+@socketio.on('setColores')
+def handle_message(colores):
+    manager.setColorRanges(colores)
 
 if __name__ == '__main__':
 	start()

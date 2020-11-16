@@ -6,7 +6,7 @@ $(document).ready(function () {
 	socket = io()
 
 	socket.on('connect', function() {
-		socket.emit('message', {data: 'I\'m connected!'});
+		socket.emit('getColores', {});
 
 		socket.on('colores', function(rangos) {
 			colorRanges = JSON.parse(rangos)

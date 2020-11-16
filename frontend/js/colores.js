@@ -71,11 +71,11 @@ $(document).ready(function () {
 		})
 		.on('slideStop', function(ev) {
 	    var newVal = $('#'+slider).data('slider').getValue();
-	    if(originalVal != newVal) {
+	    if (originalVal != newVal) {
 	      const keys = $(this)[0].id.split('-');
 	      const keyValue = r.findIndex(v => {return v === keys[0]})
 	      colorRanges[keys[1]][keys[2]][keys[3]][keyValue] = newVal
-				socket.emit('message', {data: colorRanges});
+				socket.emit('setColores', {data: colorRanges});
 	    }
 		});
 	})

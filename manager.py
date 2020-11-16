@@ -186,3 +186,6 @@ class Manager:
 
 	def getColorRanges(self):
 		return self.color.getColorRanges()
+
+	def setColorRanges(self, colores):
+		return self.color.setColorRanges(colores)
