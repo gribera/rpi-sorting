@@ -1,13 +1,16 @@
 import manager as manager
 from flask import Flask, Response, request, render_template
 from flask_socketio import SocketIO, send, emit
+from engineio.payload import Payload
 
 manager = manager.Manager('color')
 app = Flask(__name__,
 			static_folder="frontend",
 			template_folder='frontend')
 
+Payload.max_decode_packets = 74
 app.config['SECRET_KEY'] = 'secret!'
+
 socketio = SocketIO(app) # , logger=True
 
 streaming = True
@@ -15,7 +18,7 @@ streaming = True
 @app.after_request
 def add_header(r):
     """
-    Deshabilita cache
+    	Deshabilita cache
     """
     r.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, public, max-age=0'
     r.headers['Pragma'] = 'no-cache'

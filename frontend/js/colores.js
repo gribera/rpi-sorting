@@ -63,21 +63,13 @@ $(document).ready(function () {
 	$.each(sliders, function(k, slider) {
 		$('#'+slider).slider({
 			formatter: function (value, id) {
-				return 'Current value: ' + value;
+	      const keys = $(this)[0].id.split('-')
+	      const keyValue = r.findIndex(v => {return v === keys[1]})
+	      colorRanges[keys[2]][keys[3]][keys[4]][keyValue] = value
+				socket.emit('setColores', {data: colorRanges})
+				return value
 			}
-		})
-		.on('slideStart', function(ev) {
-	    originalVal = $('#'+slider).data('slider').getValue();
-		})
-		.on('slideStop', function(ev) {
-	    var newVal = $('#'+slider).data('slider').getValue();
-	    if (originalVal != newVal) {
-	      const keys = $(this)[0].id.split('-');
-	      const keyValue = r.findIndex(v => {return v === keys[0]})
-	      colorRanges[keys[1]][keys[2]][keys[3]][keyValue] = newVal
-				socket.emit('setColores', {data: colorRanges});
-	    }
 		});
-	})
+	});
 
 });
