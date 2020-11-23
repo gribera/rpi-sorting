@@ -2,6 +2,8 @@ import manager as manager
 from flask import Flask, Response, request, render_template
 from flask_socketio import SocketIO, send, emit
 from engineio.payload import Payload
+from threading import Thread
+import fps as FPS
 
 manager = manager.Manager('color')
 app = Flask(__name__,
@@ -14,6 +16,7 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app) # , logger=True
 
 streaming = True
+fps = FPS.FPS()
 
 @app.after_request
 def add_header(r):
@@ -30,6 +33,7 @@ def stream():
 
 	while streaming:
 		stringData = manager.getFrame()
+		fps.update()
 		yield(b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
 
 def start():
@@ -64,14 +68,19 @@ def cambiarModo(modo):
 @app.route('/start')
 def startStream():
 	global streaming
+
+	fps.start()
 	streaming = True
-	stream()
+	Thread(target=stream, args=()).start()
 
 	return 'OK'
 
 @app.route('/stop')
 def stopStream():
 	global streaming
+	fps.stop()
+	print("[INFO] elasped time: {:.2f}".format(fps.elapsed()))
+	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 	streaming = False
 	return 'OK'
 
