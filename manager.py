@@ -1,9 +1,9 @@
-
 import cv2
 import numpy as np
 import vision as vision
 import colores as colores
 import formas as formas
+import codigos as codigos
 import tracker as tracker
 import cinta as cinta
 
@@ -38,6 +38,8 @@ class Manager:
 			self.color = colores.Colores()
 		if modalidad == 'forma':
 			self.forma = formas.Formas()
+		if modalidad == 'codigo':
+			self.codigo = codigos.Codigos()
 		if self.tracker:
 			del self.tracker
 			self.tracker = tracker.Tracker()
@@ -63,7 +65,7 @@ class Manager:
 		"""
 			Cambia modo de trabajo
 
-			modo: string, Modo de trabajo [color, forma]
+			modo: string, Modo de trabajo [color, forma, codigo]
 		"""
 		self.iniciarObjeto(modo)
 		self.modalidad = modo
@@ -73,6 +75,8 @@ class Manager:
 			imgContours, finalContours = self.forma.getContours(self.frame, returnMask=self.showMask)
 		if self.modalidad == 'color':
 			imgContours, finalContours = self.color.getContours(self.frame, returnMask=self.showMask)
+		if self.modalidad == 'codigo':
+			imgContours, finalContours = self.codigo.getContours(self.frame)
 
 		return imgContours, finalContours
 
@@ -86,6 +90,10 @@ class Manager:
 			self.printColorInfo(imgContours, self.trackableObjects, showID=self.showID,
 								position=self.position, showCentroid=self.showCentroid,
 								showBoundingRect=self.showBoundingRect, countItems=self.counting)
+		if self.modalidad == 'codigo':
+			self.printCodigoInfo(imgContours, self.trackableObjects, showID=self.showID,
+								position=self.position, showCentroid=self.showCentroid,
+								showBoundingRect=self.showBoundingRect)
 
 	def printColorInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
 					   countItems=False, showID=True):
@@ -156,6 +164,27 @@ class Manager:
 					cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
 						(255,0,255), 2)
 					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+
+	def printCodigoInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
+					   showID=True):
+		if position == "right":
+			xDes = 100
+		else:
+			xDes = 20
+
+		for key, value in to.items():
+			x = value.getCentroidX()
+			y = value.getCentroidY()
+			(startX, startY, w, h) = value.bbox
+			if showCentroid == True:
+				self.vision.dibujarPunto(x, y)
+			if showBoundingRect == True:
+				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
+					(255,0,0), 3)
+			if showID:
+				text = "ID {}".format(value.objectID)
+				cv2.putText(frame, text, (x + xDes, y),
+					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 
 	def moverCinta(self, velocidad):
 		self.cinta.setVelocidad(velocidad)
