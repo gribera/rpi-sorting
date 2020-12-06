@@ -25,6 +25,9 @@ class TrackableObject:
 	def setBoundingBox(self, bbox):
 		self.bbox = bbox
 
+	def setText(self, text):
+		self.text = text
+
 	def setMedida(self, medida):
 		self.medida = medida
 

@@ -112,6 +112,7 @@ class Tracker:
 				self.trackableObjects[objectID].setCentroid(inputCentroids[col])
 				self.trackableObjects[objectID].setPoligon(figs[col][2])
 				self.trackableObjects[objectID].setBoundingBox(figs[col][3])
+				self.trackableObjects[objectID].setText(figs[i][4])
 
 				# indicate that we have examined each of the row and
 				# column indexes, respectively
@@ -148,9 +149,9 @@ class Tracker:
 				for col in unusedCols:
 					self.register(inputCentroids[col], poli[i], bbox[i], figs[i][4])
 
-	def register(self, centroid, poli, bbox, color):
+	def register(self, centroid, poli, bbox, txt):
 		self.disappeared[self.nextObjectID] = 0
-		to = TrackableObject(self.nextObjectID, centroid, poli, bbox, color)
+		to = TrackableObject(self.nextObjectID, centroid, poli, bbox, txt)
 		self.trackableObjects[self.nextObjectID] = to
 		self.nextObjectID += 1
 

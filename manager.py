@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import time as time
 import vision as vision
 import colores as colores
 import formas as formas
