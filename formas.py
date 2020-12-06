@@ -57,8 +57,9 @@ class Formas:
 				if len(poli) == 4:
 					poli = self.reorder(poli)
 				bbox = cv2.boundingRect(poli)
+				txt = self.detectShape(poli)
 
-				finalContours.append([cnt, area, poli, bbox, None])
+				finalContours.append([cnt, area, poli, bbox, txt])
 
 
 		finalContours = sorted(finalContours, key = lambda x: x[1], reverse=True)

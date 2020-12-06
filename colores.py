@@ -85,8 +85,9 @@ class Colores:
 					per = cv2.arcLength(cnt, True)
 					poli = cv2.approxPolyDP(cnt, 0.02 * per, True)
 					bbox = cv2.boundingRect(poli)
+					txt = self.colores[mask]
 
-					finalContours.append([cnt, area, poli, bbox, mask])
+					finalContours.append([cnt, area, poli, bbox, txt])
 
 		finalContours = sorted(finalContours, key = lambda x: x[1], reverse=True)
 

@@ -81,8 +81,8 @@ $(document).ready(function () {
 		$.getJSON('/params/drawContours')
 	});
 
-	$('#chk-show-forma').change(function () {
-		$.getJSON('/params/showForma')
+	$('#chk-show-txt').change(function () {
+		$.getJSON('/params/showTxt')
 	});
 
 	$('#chk-show-bounding-rect').change(function () {
@@ -102,7 +102,7 @@ $(document).ready(function () {
 			showID: $('#chk-show-id').prop('checked'),
 			showCentroid: $('#chk-show-centroid').prop('checked'),
 			drawContours: $('#chk-draw-contours').prop('checked'),
-			showForma: $('#chk-show-forma').prop('checked'),
+			showTxt: $('#chk-show-txt').prop('checked'),
 			showBoundingRect: $('#chk-show-bounding-rect').prop('checked'),
 			showMeasure: $('#chk-show-measure').prop('checked'),
 			showMask: $('#chk-show-mask').prop('checked')
@@ -110,11 +110,11 @@ $(document).ready(function () {
 	}
 
 	const _cambioModo = (modo) => {
-		const commonOptions = ['chk-show-id', 'chk-show-centroid',
+		const commonOptions = ['chk-show-id', 'chk-show-centroid', 'chk-show-txt',
 													 'chk-draw-contours', 'chk-show-bounding-rect', 'chk-show-mask']
 		const opcionesModos = {
 			color: [...commonOptions, 'config-color'],
-			forma: [...commonOptions, 'chk-show-forma', 'chk-show-measure'],
+			forma: [...commonOptions, 'chk-show-measure'],
 			codigo: [...commonOptions]
 		}
 

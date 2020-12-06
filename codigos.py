@@ -12,19 +12,16 @@ class Codigos:
 
 		for barcode in decode(frame):
 			# print(barcode.data)
-			# myData = barcode.data.decode('utf-8')
-			# print(myData)
 			poli = barcode.polygon
 			poli = np.array([barcode.polygon], np.int32)
 			poli = poli.reshape((-1, 1, 2))
 			bbox = cv2.boundingRect(poli)
+			txt = barcode.data.decode('utf-8')
 			# print(bbox)
 			# print(type(bbox))
 			# (x, y, w, h) =
-			cnt = []
-			area = []
 			mask = []
 
-			finalContours.append([cnt, area, poli, bbox, mask])
+			finalContours.append([None, None, poli, bbox, txt])
 
 		return frame, finalContours

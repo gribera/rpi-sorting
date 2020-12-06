@@ -58,7 +58,7 @@ def cambiarModo(modo):
 	manager.setVariables(showID=params["showID"],
 						 showCentroid=params["showCentroid"],
 						 drawContours=params["drawContours"],
-						 showForma=params["showForma"],
+						 showTxt=params["showTxt"],
 						 showBoundingRect=params["showBoundingRect"],
 						 measure=params["showMeasure"],
 						 showMask=params["showMask"])
@@ -114,10 +114,10 @@ def drawContours():
 	manager.toggleDrawContours()
 	return 'OK'
 
-@app.route('/params/showForma')
-def showForma():
+@app.route('/params/showTxt')
+def showTxt():
 	global manager
-	manager.toggleShowForma()
+	manager.toggleShowTxt()
 	return 'OK'
 
 @app.route('/params/showBoundingRect')
