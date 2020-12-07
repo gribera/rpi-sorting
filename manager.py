@@ -84,7 +84,7 @@ class Manager:
 		if self.modalidad == 'color':
 			imgContours, finalContours = self.color.getContours(self.frame, returnMask=self.params['showMask'])
 		if self.modalidad == 'codigo':
-			imgContours, finalContours = self.codigo.getContours(self.frame)
+			imgContours, finalContours = self.codigo.getContours(self.frame, returnMask=self.params['showMask'])
 
 		return imgContours, finalContours
 
@@ -145,7 +145,6 @@ class Manager:
 						cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 	def printFormaInfo(self, frame):
-		print(self.trackableObjects[0].getTxt())
 		for key, obj in self.trackableObjects.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()

@@ -11,17 +11,18 @@ class Codigos:
 		finalContours = []
 
 		for barcode in decode(frame):
-			# print(barcode.data)
 			poli = barcode.polygon
 			poli = np.array([barcode.polygon], np.int32)
 			poli = poli.reshape((-1, 1, 2))
 			bbox = cv2.boundingRect(poli)
 			txt = barcode.data.decode('utf-8')
-			# print(bbox)
-			# print(type(bbox))
-			# (x, y, w, h) =
-			mask = []
 
 			finalContours.append([None, None, poli, bbox, txt])
 
-		return frame, finalContours
+		if returnMask:
+			mask = cv2.inRange(frame, (0, 0, 0), (200, 200, 200))
+			thresholded = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+			inverted = 255 - thresholded
+			return inverted, finalContours
+		else:
+			return frame, finalContours
