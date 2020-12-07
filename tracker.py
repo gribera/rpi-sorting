@@ -112,7 +112,7 @@ class Tracker:
 				self.trackableObjects[objectID].setCentroid(inputCentroids[col])
 				self.trackableObjects[objectID].setPoligon(figs[col][2])
 				self.trackableObjects[objectID].setBoundingBox(figs[col][3])
-				self.trackableObjects[objectID].setText(figs[i][4])
+				self.trackableObjects[objectID].setText(figs[col][4])
 
 				# indicate that we have examined each of the row and
 				# column indexes, respectively
