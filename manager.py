@@ -34,16 +34,12 @@ class Manager:
 		self.setVariables(dicParams)
 
 	def setVariables(self, dicParams):
+		"""
+			Actualiza el diccionario con los parámetros
+
+			dicParams: dict, Diccionario de parámetros
+		"""
 		self.params = dicParams
-		# self.showID = dicParams['showID']
-		# self.showCentroid = dicParams['showCentroid']
-		# self.position = dicParams['position']
-		# self.drawContours = dicParams['drawContours']
-		# self.showBoundingRect = dicParams['showBoundingRect']
-		# self.countItems = dicParams['countItems']
-		# self.showTxt = dicParams['showTxt']
-		# self.measure = dicParams['measure']
-		# self.showMask = dicParams['showMask']
 
 	def iniciarObjeto(self, modalidad):
 		if modalidad == 'color':
@@ -93,12 +89,13 @@ class Manager:
 		return imgContours, finalContours
 
 	def showInfo(self, imgContours):
+		self.commonInfo(imgContours)
 		if self.modalidad == 'forma':
-			self.printFormaInfo(imgContours, self.trackableObjects)
+			self.printFormaInfo(imgContours)
 		if self.modalidad == 'color':
-			self.printColorInfo(imgContours, self.trackableObjects)
+			self.printColorInfo(imgContours)
 		if self.modalidad == 'codigo':
-			self.printCodigoInfo(imgContours, self.trackableObjects)
+			self.printCodigoInfo(imgContours)
 
 	def getPosition(self, align, xDes, yDes):
 		"""
@@ -117,17 +114,15 @@ class Manager:
 
 		return xDes, yDes
 
-	def printColorInfo(self, frame, to):
-		for key, obj in to.items():
+	def commonInfo(self, frame):
+		for key, obj in self.trackableObjects.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
 			(startX, startY, w, h) = obj.bbox
 			if self.params['showCentroid'] == True:
 				self.vision.dibujarPunto(x, y)
 			if self.params['showBoundingRect'] == True:
-				idxColor = self.color.colores.index(obj.getTxt())
-				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
-					self.color.border_colors[idxColor], 3)
+				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
 			if self.params['showID']:
 				posX, posY = self.getPosition(self.params['position'], x, y)
 				text = "ID {}".format(obj.objectID)
@@ -137,6 +132,8 @@ class Manager:
 				posX, posY = self.getPosition(self.params['position'], x, y + 15)
 				cv2.putText(frame, obj.getTxt(), (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
+
+	def printColorInfo(self, frame):
 			if self.params['countItems'] == True:
 				if obj.counted == False:
 					self.color.total[obj.color] += 1
@@ -147,25 +144,13 @@ class Manager:
 					cv2.putText(frame, text, (10, ((i * 20) + 20)),
 						cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-	def printFormaInfo(self, frame, to):
-		for key, obj in to.items():
+	def printFormaInfo(self, frame):
+		print(self.trackableObjects[0].getTxt())
+		for key, obj in self.trackableObjects.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
 			(startX, startY, w, h) = obj.bbox
 			forma = obj.getTxt()
-			if self.params['showCentroid'] == True:
-				self.vision.dibujarPunto(x, y)
-			if self.params['showBoundingRect'] == True:
-				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
-			if self.params['showID'] == True:
-				posX, posY = self.getPosition(self.params['position'], x, y)
-				text = "ID {}".format(obj.objectID)
-				cv2.putText(frame, text, (posX, posY),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if self.params['showTxt'] == True:
-				posX, posY = self.getPosition(self.params['position'], x, y + 15)
-				cv2.putText(frame, forma, (posX, posY),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 			if self.params['measure'] == True:
 				if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
 					mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
@@ -180,25 +165,8 @@ class Manager:
 						(255,0,255), 2)
 					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
 
-	def printCodigoInfo(self, frame, to):
-		for key, obj in to.items():
-			x = obj.getCentroidX()
-			y = obj.getCentroidY()
-			(startX, startY, w, h) = obj.bbox
-			if self.params['showCentroid'] == True:
-				self.vision.dibujarPunto(x, y)
-			if self.params['showBoundingRect'] == True:
-				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
-					(255,0,0), 3)
-			if self.params['showID']:
-				posX, posY = self.getPosition(self.params['position'], x, y)
-				text = "ID {}".format(obj.objectID)
-				cv2.putText(frame, text, (posX, posY),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if self.params['showTxt'] == True:
-				posX, posY = self.getPosition(self.params['position'], x, y + 15)
-				cv2.putText(frame, obj.getTxt(), (posX, posY),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
+	def printCodigoInfo(self, frame):
+		pass
 
 	def moverCinta(self, velocidad):
 		self.cinta.setVelocidad(velocidad)
