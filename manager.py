@@ -96,14 +96,25 @@ class Manager:
 								position=self.position, showCentroid=self.showCentroid,
 								showBoundingRect=self.showBoundingRect, showTxt=self.showTxt)
 
+	def getPosition(self, align, xDes, yDes):
+		"""
+			Devuelve la posición x, y de acuerdo a la alineación pasada por parámetro
+
+			align: string, Alineación [center, right]
+			xDes: int, Coordenada x
+			yDes: int, Coordenada y
+		"""
+		if align == "center":
+			xDes = xDes + 20
+		if align == "right":
+			xDes = xDes + 100
+
+		yDes += 15
+
+		return xDes, yDes
+
 	def printColorInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
 					   countItems=False, showID=True, showTxt=False):
-		if position == "right":
-			xDes = 100
-		else:
-			xDes = 20
-		yDes = 0
-
 		for key, obj in to.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
@@ -115,14 +126,14 @@ class Manager:
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
 					self.color.border_colors[idxColor], 3)
 			if showID:
+				posX, posY = self.getPosition(position, x, y)
 				text = "ID {}".format(obj.objectID)
-				cv2.putText(frame, text, (x + xDes, y),
+				cv2.putText(frame, text, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-				yDes += 15
 			if showTxt == True:
-				cv2.putText(frame, obj.getTxt(), (x + xDes, y + yDes),
+				posX, posY = self.getPosition(position, x, y + 15)
+				cv2.putText(frame, obj.getTxt(), (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-				yDes += 15
 			if countItems == True:
 				if obj.counted == False:
 					self.color.total[obj.color] += 1
@@ -135,30 +146,24 @@ class Manager:
 
 	def printFormaInfo(self, frame, to, position="center", showCentroid=False, showTxt=False,
 					 showID=False, showBoundingRect=False, drawContours=False, measure=False):
-		if position == "center":
-			xDes = 20
-		if position == "right":
-			xDes = 100
-
 		for key, obj in to.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
 			(startX, startY, w, h) = obj.bbox
 			forma = obj.getTxt()
-			yDes = 0
 			if showCentroid == True:
 				self.vision.dibujarPunto(x, y)
 			if showBoundingRect == True:
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
 			if showID == True:
+				posX, posY = self.getPosition(position, x, y)
 				text = "ID {}".format(obj.objectID)
-				cv2.putText(frame, text, (x + xDes, y + yDes),
+				cv2.putText(frame, text, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-				yDes += 15
 			if showTxt == True:
-				cv2.putText(frame, forma, (x + xDes, y + yDes),
+				posX, posY = self.getPosition(position, x, y + 15)
+				cv2.putText(frame, forma, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-				yDes += 15
 			if measure == True:
 				if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
 					mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
@@ -175,12 +180,6 @@ class Manager:
 
 	def printCodigoInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
 					   showID=True, showTxt=False):
-		if position == "right":
-			xDes = 100
-		else:
-			xDes = 20
-		yDes = 0
-
 		for key, obj in to.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
@@ -191,14 +190,14 @@ class Manager:
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
 					(255,0,0), 3)
 			if showID:
+				posX, posY = self.getPosition(position, x, y)
 				text = "ID {}".format(obj.objectID)
-				cv2.putText(frame, text, (x + xDes, y),
+				cv2.putText(frame, text, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-				yDes += 15
 			if showTxt == True:
-				cv2.putText(frame, obj.getTxt(), (x + xDes, y + yDes),
+				posX, posY = self.getPosition(position, x, y + 15)
+				cv2.putText(frame, obj.getTxt(), (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-				yDes += 15
 
 	def moverCinta(self, velocidad):
 		self.cinta.setVelocidad(velocidad)
