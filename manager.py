@@ -10,6 +10,7 @@ import cinta as cinta
 class Manager:
 	vision = vision.Vision()
 	trackableObjects = {}
+	params = {}
 
 	def __init__(self, modalidad):
 		self.cinta = cinta.Cinta()
@@ -18,20 +19,31 @@ class Manager:
 		self.modalidad = modalidad
 
 		# Parámetros por defecto de las vistas
-		self.setVariables()
+		dicParams = {
+			'showID': False,
+			'showTxt': False,
+			'showCentroid': False,
+			'showBoundingRect': False,
+			'showMask': False,
+			'position': 'center',
+			'drawContours': False,
+			'measure': False,
+			'countItems': False
+		}
 
-	def setVariables(self, showID=False, showCentroid=False, position="center",
-					 drawContours=False, showTxt=False, showBoundingRect=False,
-					 measure=False, counting=False, showMask=False):
-		self.showID = showID
-		self.showCentroid = showCentroid
-		self.position = position
-		self.drawContours = drawContours
-		self.showBoundingRect = showBoundingRect
-		self.counting = counting
-		self.showTxt = showTxt
-		self.measure = measure
-		self.showMask = showMask
+		self.setVariables(dicParams)
+
+	def setVariables(self, dicParams):
+		self.params = dicParams
+		# self.showID = dicParams['showID']
+		# self.showCentroid = dicParams['showCentroid']
+		# self.position = dicParams['position']
+		# self.drawContours = dicParams['drawContours']
+		# self.showBoundingRect = dicParams['showBoundingRect']
+		# self.countItems = dicParams['countItems']
+		# self.showTxt = dicParams['showTxt']
+		# self.measure = dicParams['measure']
+		# self.showMask = dicParams['showMask']
 
 	def iniciarObjeto(self, modalidad):
 		if modalidad == 'color':
@@ -72,9 +84,9 @@ class Manager:
 
 	def getContours(self):
 		if self.modalidad == 'forma':
-			imgContours, finalContours = self.forma.getContours(self.frame, returnMask=self.showMask)
+			imgContours, finalContours = self.forma.getContours(self.frame, returnMask=self.params['showMask'])
 		if self.modalidad == 'color':
-			imgContours, finalContours = self.color.getContours(self.frame, returnMask=self.showMask)
+			imgContours, finalContours = self.color.getContours(self.frame, returnMask=self.params['showMask'])
 		if self.modalidad == 'codigo':
 			imgContours, finalContours = self.codigo.getContours(self.frame)
 
@@ -82,19 +94,11 @@ class Manager:
 
 	def showInfo(self, imgContours):
 		if self.modalidad == 'forma':
-			self.printFormaInfo(imgContours, self.trackableObjects, showID=self.showID,
-								showTxt=self.showTxt, showCentroid=self.showCentroid,
-								position=self.position, drawContours=self.drawContours,
-								showBoundingRect=self.showBoundingRect, measure=self.measure)
+			self.printFormaInfo(imgContours, self.trackableObjects)
 		if self.modalidad == 'color':
-			self.printColorInfo(imgContours, self.trackableObjects, showID=self.showID,
-								position=self.position, showCentroid=self.showCentroid,
-								showBoundingRect=self.showBoundingRect,
-								countItems=self.counting, showTxt=self.showTxt)
+			self.printColorInfo(imgContours, self.trackableObjects)
 		if self.modalidad == 'codigo':
-			self.printCodigoInfo(imgContours, self.trackableObjects, showID=self.showID,
-								position=self.position, showCentroid=self.showCentroid,
-								showBoundingRect=self.showBoundingRect, showTxt=self.showTxt)
+			self.printCodigoInfo(imgContours, self.trackableObjects)
 
 	def getPosition(self, align, xDes, yDes):
 		"""
@@ -113,28 +117,27 @@ class Manager:
 
 		return xDes, yDes
 
-	def printColorInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
-					   countItems=False, showID=True, showTxt=False):
+	def printColorInfo(self, frame, to):
 		for key, obj in to.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
 			(startX, startY, w, h) = obj.bbox
-			if showCentroid == True:
+			if self.params['showCentroid'] == True:
 				self.vision.dibujarPunto(x, y)
-			if showBoundingRect == True:
+			if self.params['showBoundingRect'] == True:
 				idxColor = self.color.colores.index(obj.getTxt())
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
 					self.color.border_colors[idxColor], 3)
-			if showID:
-				posX, posY = self.getPosition(position, x, y)
+			if self.params['showID']:
+				posX, posY = self.getPosition(self.params['position'], x, y)
 				text = "ID {}".format(obj.objectID)
 				cv2.putText(frame, text, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if showTxt == True:
-				posX, posY = self.getPosition(position, x, y + 15)
+			if self.params['showTxt'] == True:
+				posX, posY = self.getPosition(self.params['position'], x, y + 15)
 				cv2.putText(frame, obj.getTxt(), (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if countItems == True:
+			if self.params['countItems'] == True:
 				if obj.counted == False:
 					self.color.total[obj.color] += 1
 					obj.setCounted()
@@ -144,27 +147,26 @@ class Manager:
 					cv2.putText(frame, text, (10, ((i * 20) + 20)),
 						cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-	def printFormaInfo(self, frame, to, position="center", showCentroid=False, showTxt=False,
-					 showID=False, showBoundingRect=False, drawContours=False, measure=False):
+	def printFormaInfo(self, frame, to):
 		for key, obj in to.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
 			(startX, startY, w, h) = obj.bbox
 			forma = obj.getTxt()
-			if showCentroid == True:
+			if self.params['showCentroid'] == True:
 				self.vision.dibujarPunto(x, y)
-			if showBoundingRect == True:
+			if self.params['showBoundingRect'] == True:
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
-			if showID == True:
-				posX, posY = self.getPosition(position, x, y)
+			if self.params['showID'] == True:
+				posX, posY = self.getPosition(self.params['position'], x, y)
 				text = "ID {}".format(obj.objectID)
 				cv2.putText(frame, text, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if showTxt == True:
-				posX, posY = self.getPosition(position, x, y + 15)
+			if self.params['showTxt'] == True:
+				posX, posY = self.getPosition(self.params['position'], x, y + 15)
 				cv2.putText(frame, forma, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if measure == True:
+			if self.params['measure'] == True:
 				if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
 					mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
 					nH = round((self.forma.findDis(obj.poli[0][0], obj.poli[2][0])),1)
@@ -178,24 +180,23 @@ class Manager:
 						(255,0,255), 2)
 					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
 
-	def printCodigoInfo(self, frame, to, position="center", showCentroid=False, showBoundingRect=False,
-					   showID=True, showTxt=False):
+	def printCodigoInfo(self, frame, to):
 		for key, obj in to.items():
 			x = obj.getCentroidX()
 			y = obj.getCentroidY()
 			(startX, startY, w, h) = obj.bbox
-			if showCentroid == True:
+			if self.params['showCentroid'] == True:
 				self.vision.dibujarPunto(x, y)
-			if showBoundingRect == True:
+			if self.params['showBoundingRect'] == True:
 				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h),
 					(255,0,0), 3)
-			if showID:
-				posX, posY = self.getPosition(position, x, y)
+			if self.params['showID']:
+				posX, posY = self.getPosition(self.params['position'], x, y)
 				text = "ID {}".format(obj.objectID)
 				cv2.putText(frame, text, (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if showTxt == True:
-				posX, posY = self.getPosition(position, x, y + 15)
+			if self.params['showTxt'] == True:
+				posX, posY = self.getPosition(self.params['position'], x, y + 15)
 				cv2.putText(frame, obj.getTxt(), (posX, posY),
 					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 
@@ -206,25 +207,25 @@ class Manager:
 		self.cinta.setDireccion()
 
 	def toggleShowID(self):
-		self.showID = not self.showID
+		self.params['showID'] = not self.params['showID']
 
 	def toggleShowCentroid(self):
-		self.showCentroid = not self.showCentroid
+		self.params['showCentroid'] = not self.params['showCentroid']
 
 	def toggleDrawContours(self):
-		self.drawContours = not self.drawContours
+		self.params['drawContours'] = not self.params['drawContours']
 
 	def toggleShowTxt(self):
-		self.showTxt = not self.showTxt
+		self.params['showTxt'] = not self.params['showTxt']
 
 	def toggleShowBoundingRect(self):
-		self.showBoundingRect = not self.showBoundingRect
+		self.params['showBoundingRect'] = not self.params['showBoundingRect']
 
 	def toggleShowMeasure(self):
-		self.measure = not self.measure
+		self.params['measure'] = not self.params['measure']
 
 	def toggleShowMask(self):
-		self.showMask = not self.showMask
+		self.params['showMask'] = not self.params['showMask']
 
 	def getColorRanges(self):
 		return self.color.getColorRanges()

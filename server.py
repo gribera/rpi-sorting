@@ -55,13 +55,20 @@ def info():
 def cambiarModo(modo):
 	global manager
 	params = request.json
-	manager.setVariables(showID=params["showID"],
-						 showCentroid=params["showCentroid"],
-						 drawContours=params["drawContours"],
-						 showTxt=params["showTxt"],
-						 showBoundingRect=params["showBoundingRect"],
-						 measure=params["showMeasure"],
-						 showMask=params["showMask"])
+
+	dicParams = {
+		'showID': params["showID"],
+		'showTxt': params["showTxt"],
+		'showCentroid': params["showCentroid"],
+		'showBoundingRect': params["showBoundingRect"],
+		'showMask': params["showMask"],
+		'position': 'center',
+		'drawContours': params["drawContours"],
+		'measure': params["showMeasure"],
+		'countItems': False
+	}
+
+	manager.setVariables(dicParams)
 	manager.cambioModo(modo)
 	return modo
 
