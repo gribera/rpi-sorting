@@ -144,4 +144,9 @@ $(document).ready(function () {
 		event.preventDefault();
 	});
 
+	$('#configModal').on('show.bs.modal', function (event) {
+	  const modo = $('input[name=modo]:checked').val()
+	  const modal = $(this)
+	  modal.find('.modal-title').text('Configurar ' + modo)
+	})
 });

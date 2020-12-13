@@ -64,12 +64,11 @@ $(document).ready(function () {
 		$('#'+slider).slider({
 			formatter: function (value, id) {
 	      const keys = $(this)[0].id.split('-')
-	      const keyValue = r.findIndex(v => {return v === keys[1]})
+	      const keyValue = r.findIndex(v => { return v === keys[1] })
 	      colorRanges[keys[2]][keys[3]][keys[4]][keyValue] = value
 				socket.emit('setColores', {data: colorRanges})
 				return value
 			}
 		});
 	});
-
 });
