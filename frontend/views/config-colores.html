@@ -1,35 +1,60 @@
-<script src="{{url_for('static', filename='js/colores.js')}}"></script>
-		<div class="row p-3 justify-content-center">
-			<div class="col p-2">
-				<button type="button"
-								id="btnRed"
-								class="btn btn-outline-secondary"
-								style="color:red">
-					Rojo
-				</button>
-			</div>
-			<div class="col p-2">
-				<button type="button"
-								id="btnYellow"
-								class="btn btn-outline-secondary"
-								style="color:yellow">
-					Amarillo
-				</button>
-			</div>
-			<div class="col p-2">
-				<button type="button"
-								id="btnBlue"
-								class="btn btn-outline-secondary"
-								style="color:blue">
-					Azul
-				</button>
-			</div>
-		</div>
-		<div class="row" id="config-color">
-			<div id="rangos" class="col">
+<html>
+	<head>
+		<script>
+			const url = document.URL + 'frontend/js/colores.js';
+			$.getScript(url);
+		</script>
+	</head>
+	<body>
 
+	<div class="card">
+	  <div class="card-header container-fluid" id="config-colores">
+	    <div class="row">
+	        <div class="col">
+	            <span>Configurar rangos HSV</span>
+	        </div>
+	        <div class="col">
+		        <button type="button" id="close-card" class="close" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+	        </div>
+	    </div>
+    </div>
+	  <div class="card-body">
+			<div class="row justify-content-center">
+				<div class="col p-2">
+					<button type="button"
+									id="btnRed"
+									class="btn btn-outline-secondary"
+									style="color:red">
+						Rojo
+					</button>
+				</div>
+				<div class="col p-2">
+					<button type="button"
+									id="btnYellow"
+									class="btn btn-outline-secondary"
+									style="color:yellow">
+						Amarillo
+					</button>
+				</div>
+				<div class="col p-2">
+					<button type="button"
+									id="btnBlue"
+									class="btn btn-outline-secondary"
+									style="color:blue">
+						Azul
+					</button>
+				</div>
 			</div>
-		</div>
+			<div class="row" id="config-color">
+				<div id="rangos" class="col">
+
+				</div>
+			</div>
+
+	  </div>
+	</div>
 	</body>
 </html>
 

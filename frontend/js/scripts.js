@@ -41,15 +41,21 @@ $(document).ready(function () {
 
 	$('input[name=modo]').click(function () {
 		const modo = $(this).val()
+		const configColorButton = $('#config-color');
 
 		_cambioModo(modo)
+
+		if (modo === 'color')
+			configColorButton.show();
+		else
+			configColorButton.hide();
 
 		$.ajax({
 			url: '/modo/' + modo,
 			data: JSON.stringify(_getOptions()),
 			type: 'POST',
 			dataType: 'json',
-			contentType: "application/json; charset=utf-8",
+			contentType: 'application/json; charset=utf-8',
 			success: function (wsQuery) {
 				console.log(wsQuery)
 			}
@@ -136,9 +142,11 @@ $(document).ready(function () {
 
 	// TODO: Tira error al presionar 2 veces el botón.
 	$('#config-color').click(function (event) {
-		var target = $('#config');
-		target.load('/config-colores', function() {
-			target.slideDown('fast')
+		$(this).hide();
+		const divConfig = $('#config');
+
+		divConfig.load('/config-colores', function() {
+			divConfig.slideDown('fast')
 		});
 
 		event.preventDefault();

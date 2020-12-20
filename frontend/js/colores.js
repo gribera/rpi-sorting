@@ -40,7 +40,7 @@ $.each(colorRanges, function(color, ranges) {
 	inHTML += `</div>`
 })
 
-$("#rangos").html(inHTML);
+$('#rangos').html(inHTML);
 
 $(document).ready(function () {
 
@@ -59,6 +59,11 @@ $(document).ready(function () {
 	$('#btnYellow').click(function() {
 		$('#yellow').toggle();
 	});
+
+	$('#close-card').click(function() {
+		$('#config-color').show();
+		$('#config-colores').parent().fadeOut();
+	})
 
 	$.each(sliders, function(k, slider) {
 		$('#'+slider).slider({
