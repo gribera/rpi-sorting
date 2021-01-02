@@ -6,14 +6,17 @@ import formas as formas
 import codigos as codigos
 import tracker as tracker
 import cinta as cinta
+import classifier as classifier
 
 class Manager:
 	vision = vision.Vision()
 	trackableObjects = {}
 	params = {}
+	knownObjects = None
 
 	def __init__(self, modalidad):
 		self.cinta = cinta.Cinta()
+		self.classifier = classifier.Classifier()
 		self.tracker = tracker.Tracker()
 		self.iniciarObjeto(modalidad)
 		self.modalidad = modalidad
@@ -28,7 +31,8 @@ class Manager:
 			'position': 'center',
 			'drawContours': False,
 			'measure': False,
-			'countItems': False
+			'countItems': False,
+			'classify': False
 		}
 
 		self.setVariables(dicParams)
@@ -44,8 +48,10 @@ class Manager:
 	def iniciarObjeto(self, modalidad):
 		if modalidad == 'color':
 			self.color = colores.Colores()
+			self.knownObjects = self.color.getKnownObjects()
 		if modalidad == 'forma':
 			self.forma = formas.Formas()
+			self.knownObjects = self.forma.getKnownObjects()
 		if modalidad == 'codigo':
 			self.codigo = codigos.Codigos()
 		if self.tracker:
@@ -65,7 +71,10 @@ class Manager:
 
 			self.trackableObjects = self.tracker.getTrackableObjects()
 
-			self.showInfo(imgContours)
+			for key, obj in self.trackableObjects.items():
+				self.showInfo(imgContours, obj)
+				if not obj.isClassified():
+					self.classify(obj)
 
 		return self.vision.getStringData(imgContours)
 
@@ -88,14 +97,20 @@ class Manager:
 
 		return imgContours, finalContours
 
-	def showInfo(self, imgContours):
-		self.commonInfo(imgContours)
+	def showInfo(self, imgContours, obj):
+		self.commonInfo(imgContours, obj)
 		if self.modalidad == 'forma':
-			self.printFormaInfo(imgContours)
+			self.printFormaInfo(imgContours, obj)
 		if self.modalidad == 'color':
-			self.printColorInfo(imgContours)
+			self.printColorInfo(imgContours, obj)
 		if self.modalidad == 'codigo':
-			self.printCodigoInfo(imgContours)
+			self.printCodigoInfo(imgContours, obj)
+
+	def classify(self, obj):
+		index = self.knownObjects[0].index(obj.getTxt())
+		target = self.knownObjects[1][index]
+		self.classifier.classify(target)
+		obj.setClassified()
 
 	def getPosition(self, align, xDes, yDes):
 		"""
@@ -114,26 +129,25 @@ class Manager:
 
 		return xDes, yDes
 
-	def commonInfo(self, frame):
-		for key, obj in self.trackableObjects.items():
-			x = obj.getCentroidX()
-			y = obj.getCentroidY()
-			(startX, startY, w, h) = obj.bbox
-			if self.params['showCentroid'] == True:
-				self.vision.dibujarPunto(x, y)
-			if self.params['showBoundingRect'] == True:
-				cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
-			if self.params['showID']:
-				posX, posY = self.getPosition(self.params['position'], x, y)
-				text = "ID {}".format(obj.objectID)
-				cv2.putText(frame, text, (posX, posY),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
-			if self.params['showTxt'] == True:
-				posX, posY = self.getPosition(self.params['position'], x, y + 15)
-				cv2.putText(frame, obj.getTxt(), (posX, posY),
-					cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
+	def commonInfo(self, frame, obj):
+		x = obj.getCentroidX()
+		y = obj.getCentroidY()
+		(startX, startY, w, h) = obj.bbox
+		if self.params['showCentroid'] == True:
+			self.vision.dibujarPunto(x, y)
+		if self.params['showBoundingRect'] == True:
+			cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
+		if self.params['showID']:
+			posX, posY = self.getPosition(self.params['position'], x, y)
+			text = "ID {}".format(obj.objectID)
+			cv2.putText(frame, text, (posX, posY),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
+		if self.params['showTxt'] == True:
+			posX, posY = self.getPosition(self.params['position'], x, y + 15)
+			cv2.putText(frame, obj.getTxt(), (posX, posY),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 
-	def printColorInfo(self, frame):
+	def printColorInfo(self, framem, obj):
 			if self.params['countItems'] == True:
 				if obj.counted == False:
 					self.color.total[obj.color] += 1
@@ -144,27 +158,26 @@ class Manager:
 					cv2.putText(frame, text, (10, ((i * 20) + 20)),
 						cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-	def printFormaInfo(self, frame):
-		for key, obj in self.trackableObjects.items():
-			x = obj.getCentroidX()
-			y = obj.getCentroidY()
-			(startX, startY, w, h) = obj.bbox
-			forma = obj.getTxt()
-			if self.params['measure'] == True:
-				if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
-					mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
-					nH = round((self.forma.findDis(obj.poli[0][0], obj.poli[2][0])),1)
+	def printFormaInfo(self, frame, obj):
+		x = obj.getCentroidX()
+		y = obj.getCentroidY()
+		(startX, startY, w, h) = obj.bbox
+		forma = obj.getTxt()
+		if self.params['measure'] == True:
+			if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
+				mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
+				nH = round((self.forma.findDis(obj.poli[0][0], obj.poli[2][0])),1)
 
-					cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
-						(obj.poli[1][0][0], obj.poli[1][0][1]), (255,0,255), 2)
-					cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
-						(obj.poli[2][0][0], obj.poli[2][0][1]), (255,0,255), 2)
+				cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
+					(obj.poli[1][0][0], obj.poli[1][0][1]), (255,0,255), 2)
+				cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
+					(obj.poli[2][0][0], obj.poli[2][0][1]), (255,0,255), 2)
 
-					cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
-						(255,0,255), 2)
-					cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+				cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
+					(255,0,255), 2)
+				cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
 
-	def printCodigoInfo(self, frame):
+	def printCodigoInfo(self, frame, obj):
 		pass
 
 	def moverCinta(self, velocidad):

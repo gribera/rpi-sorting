@@ -5,6 +5,8 @@ from collections import OrderedDict
 import tracker as tracker
 
 class Colores:
+	knownObjects = [['Azul', 'Amarillo', 'Rojo'], [1, 2, 3]]
+
 	blue_lower = np.array([100,100,23], np.uint8)
 	blue_upper = np.array([125,255,255], np.uint8)
 
@@ -23,7 +25,6 @@ class Colores:
 	greenLower = (29, 86, 6)
 	greenUpper = (64, 255, 255)
 
-	colores = ['blue', 'yellow', 'red']
 	masks = [0, 0, 0]
 	total = [0, 0, 0]
 	border_colors = [(255,0,0), (0,255,255), (0,0,255)]
@@ -85,7 +86,7 @@ class Colores:
 					per = cv2.arcLength(cnt, True)
 					poli = cv2.approxPolyDP(cnt, 0.02 * per, True)
 					bbox = cv2.boundingRect(poli)
-					txt = self.colores[mask]
+					txt = self.knownObjects[0][mask]
 
 					finalContours.append([cnt, area, poli, bbox, txt])
 
@@ -95,6 +96,9 @@ class Colores:
 			return combinedMasks, finalContours
 		else:
 			return frame, finalContours
+
+	def getKnownObjects(self):
+		return self.knownObjects
 
 	def getColorRanges(self):
 		"""
@@ -120,7 +124,7 @@ class Colores:
 		"""
 			Setea los rangos de color HSV.
 
-			colors: list, Listacon todos los colores recibidos.
+			colors: list, Lista con todos los colores recibidos.
 		"""
 		self.blue_lower = np.array(colors["data"]["blue"]["lower"][0], np.uint8)
 		self.blue_upper = np.array(colors["data"]["blue"]["upper"][0], np.uint8)

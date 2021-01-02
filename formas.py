@@ -4,6 +4,8 @@ from collections import OrderedDict
 import tracker as tracker
 
 class Formas:
+	knownObjects = [['Circulo', 'Cuadrado', 'Rectangulo', 'Triangulo', 'Indefinido'], [1, 2, 3, 4, 5]]
+
 	def __init__(self):
 		self.tracker = tracker.Tracker()
 
@@ -69,6 +71,8 @@ class Formas:
 		else:
 			return frame, finalContours
 
+	def getKnownObjects(self):
+		return self.knownObjects
 
 	def reorder(self, points):
 		"""

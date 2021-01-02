@@ -5,6 +5,7 @@ class TrackableObject:
 		self.poli = poli
 		self.bbox = bbox
 		self.text = txt
+		self.classified = False
 		self.counted = False
 
 	def getCentroidX(self):
@@ -15,6 +16,9 @@ class TrackableObject:
 
 	def getTxt(self):
 		return self.text
+
+	def isClassified(self):
+		return self.classified
 
 	def setCentroid(self, centroid):
 		self.centroids = [centroid]
@@ -30,6 +34,9 @@ class TrackableObject:
 
 	def setMedida(self, medida):
 		self.medida = medida
+
+	def setClassified(self):
+		self.classified = True
 
 	def setCounted(self):
 		self.counted = True
