@@ -4,6 +4,8 @@ from pyzbar.pyzbar import decode
 import tracker as tracker
 
 class Codigos:
+	knownObjects = [[], []]
+
 	def __init__(self):
 		self.tracker = tracker.Tracker()
 
@@ -26,3 +28,6 @@ class Codigos:
 			return inverted, finalContours
 		else:
 			return frame, finalContours
+
+	def getKnownObjects(self):
+		return self.knownObjects
