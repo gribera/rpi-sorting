@@ -12,14 +12,21 @@ class Manager:
 	vision = vision.Vision()
 	trackableObjects = {}
 	params = {}
+	object = None
+	infoFunction = None
 	knownObjects = None
 
 	def __init__(self, modalidad):
+		"""
+			Constructor
+
+			modalidad: string, Modo de trabajo [color, forma, codigo]
+		"""
 		self.cinta = cinta.Cinta()
 		self.classifier = classifier.Classifier()
 		self.tracker = tracker.Tracker()
-		self.iniciarObjeto(modalidad)
 		self.modalidad = modalidad
+		self.iniciarObjeto()
 
 		# Parámetros por defecto de las vistas
 		dicParams = {
@@ -45,20 +52,33 @@ class Manager:
 		"""
 		self.params = dicParams
 
-	def iniciarObjeto(self, modalidad):
-		if modalidad == 'color':
-			self.color = colores.Colores()
-			self.knownObjects = self.color.getKnownObjects()
-		if modalidad == 'forma':
-			self.forma = formas.Formas()
-			self.knownObjects = self.forma.getKnownObjects()
-		if modalidad == 'codigo':
-			self.codigo = codigos.Codigos()
+	def iniciarObjeto(self):
+		"""
+			Inicializa objeto de acuerdo a la modalidad de trackeo
+		"""
+		if self.object:
+			del self.object
+
+		if self.modalidad == 'color':
+			self.object = colores.Colores()
+			self.infoFunction = self.printColorInfo
+		if self.modalidad == 'forma':
+			self.object = formas.Formas()
+			self.infoFunction = self.printFormaInfo
+		if self.modalidad == 'codigo':
+			self.object = codigos.Codigos()
+			self.infoFunction = self.printCodigoInfo
+
+		self.knownObjects = self.object.getKnownObjects()
+
 		if self.tracker:
 			del self.tracker
 			self.tracker = tracker.Tracker()
 
 	def getFrame(self):
+		"""
+			Lee el frame, hace un tratamiento a la imágen y detecta los objetos
+		"""
 		self.vision.readFrame()
 		self.vision.rotateImage()
 		self.vision.cutBorders([20, 0], [630, 0], [3, 478], [622, 478], False)
@@ -84,33 +104,22 @@ class Manager:
 
 			modo: string, Modo de trabajo [color, forma, codigo]
 		"""
-		self.iniciarObjeto(modo)
 		self.modalidad = modo
+		self.iniciarObjeto()
 
 	def getContours(self):
-		if self.modalidad == 'forma':
-			imgContours, finalContours = self.forma.getContours(self.frame, returnMask=self.params['showMask'])
-		if self.modalidad == 'color':
-			imgContours, finalContours = self.color.getContours(self.frame, returnMask=self.params['showMask'])
-		if self.modalidad == 'codigo':
-			imgContours, finalContours = self.codigo.getContours(self.frame, returnMask=self.params['showMask'])
+		imgContours, finalContours = self.object.getContours(self.frame, returnMask=self.params['showMask'])
 
 		return imgContours, finalContours
 
-	def showInfo(self, imgContours, obj):
-		self.commonInfo(imgContours, obj)
-		if self.modalidad == 'forma':
-			self.printFormaInfo(imgContours, obj)
-		if self.modalidad == 'color':
-			self.printColorInfo(imgContours, obj)
-		if self.modalidad == 'codigo':
-			self.printCodigoInfo(imgContours, obj)
-
 	def classify(self, obj):
-		index = self.knownObjects[0].index(obj.getTxt())
-		target = self.knownObjects[1][index]
-		self.classifier.classify(target)
-		obj.setClassified()
+		try:
+			index = self.knownObjects[0].index(obj.getTxt())
+			target = self.knownObjects[1][index]
+			self.classifier.classify(target)
+			obj.setClassified()
+		except ValueError:
+			pass
 
 	def getPosition(self, align, xDes, yDes):
 		"""
@@ -129,7 +138,13 @@ class Manager:
 
 		return xDes, yDes
 
-	def commonInfo(self, frame, obj):
+	def showInfo(self, frame, obj):
+		"""
+			Agrega al frame la información del objeto que se haya seteado para mostrar.
+
+			frame: np.array, Frame
+			obj: TrackableObject, Objeto detectado
+		"""
 		x = obj.getCentroidX()
 		y = obj.getCentroidY()
 		(startX, startY, w, h) = obj.bbox
@@ -147,26 +162,40 @@ class Manager:
 			cv2.putText(frame, obj.getTxt(), (posX, posY),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (180, 40, 180), 2)
 
-	def printColorInfo(self, framem, obj):
-			if self.params['countItems'] == True:
-				if obj.counted == False:
-					self.color.total[obj.color] += 1
-					obj.setCounted()
+		self.infoFunction(frame, obj)
 
-				for i in range(len(self.color.colores)):
-					text = "{}: {}".format(self.color.colores[i], self.color.total[i])
-					cv2.putText(frame, text, (10, ((i * 20) + 20)),
-						cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+	def printColorInfo(self, frame, obj):
+		"""
+			Agrega al frame información particular sobre el color.
+
+			frame: np.array, Frame
+			obj: TrackableObject, Objeto detectado
+		"""
+		if self.params['countItems'] == True:
+			if obj.counted == False:
+				self.object.total[obj.color] += 1
+				obj.setCounted()
+
+			for i in range(len(self.object.colores)):
+				text = "{}: {}".format(self.object.colores[i], self.object.total[i])
+				cv2.putText(frame, text, (10, ((i * 20) + 20)),
+					cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 	def printFormaInfo(self, frame, obj):
+		"""
+			Agrega al frame información particular sobre la forma.
+
+			frame: np.array, Frame
+			obj: TrackableObject, Objeto detectado
+		"""
 		x = obj.getCentroidX()
 		y = obj.getCentroidY()
 		(startX, startY, w, h) = obj.bbox
 		forma = obj.getTxt()
 		if self.params['measure'] == True:
 			if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
-				mW = round((self.forma.findDis(obj.poli[0][0], obj.poli[1][0])),1)
-				nH = round((self.forma.findDis(obj.poli[0][0], obj.poli[2][0])),1)
+				mW = round((self.object.findDis(obj.poli[0][0], obj.poli[1][0])),1)
+				nH = round((self.object.findDis(obj.poli[0][0], obj.poli[2][0])),1)
 
 				cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
 					(obj.poli[1][0][0], obj.poli[1][0][1]), (255,0,255), 2)
@@ -178,37 +207,78 @@ class Manager:
 				cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
 
 	def printCodigoInfo(self, frame, obj):
+		"""
+			Agrega al frame información particular sobre el código.
+
+			frame: np.array, Frame
+			obj: TrackableObject, Objeto detectado
+		"""
 		pass
 
 	def moverCinta(self, velocidad):
+		"""
+			Inicia elmovimiento de la cinta.
+
+			velocidad: int, Velocidad (Valor de 1 al 7)
+		"""
 		self.cinta.setVelocidad(velocidad)
 
 	def cambiarDireccionCinta(self):
+		"""
+			Cambia la dirección de la cinta.
+		"""
 		self.cinta.setDireccion()
 
 	def toggleShowID(self):
+		"""
+			Muestra u oculta ID.
+		"""
 		self.params['showID'] = not self.params['showID']
 
 	def toggleShowCentroid(self):
+		"""
+			Muestra u oculta centro del objeto.
+		"""
 		self.params['showCentroid'] = not self.params['showCentroid']
 
 	def toggleDrawContours(self):
+		"""
+			Muestra u oculta contornos del objeto.
+		"""
 		self.params['drawContours'] = not self.params['drawContours']
 
 	def toggleShowTxt(self):
+		"""
+			Muestra u oculta texto del objeto.
+		"""
 		self.params['showTxt'] = not self.params['showTxt']
 
 	def toggleShowBoundingRect(self):
+		"""
+			Muestra u oculta rectángulo del objeto.
+		"""
 		self.params['showBoundingRect'] = not self.params['showBoundingRect']
 
 	def toggleShowMeasure(self):
+		"""
+			Muestra u oculta medida del objeto (sólo en modalidad 'forma').
+		"""
 		self.params['measure'] = not self.params['measure']
 
 	def toggleShowMask(self):
+		"""
+			Muestra frame o máscara.
+		"""
 		self.params['showMask'] = not self.params['showMask']
 
 	def getColorRanges(self):
-		return self.color.getColorRanges()
+		"""
+			Recupera rangos de colores (sólo en modalidad 'color').
+		"""
+		return self.object.getColorRanges()
 
 	def setColorRanges(self, colores):
-		return self.color.setColorRanges(colores)
+		"""
+			Setea rangos de colores (sólo en modalidad 'color').
+		"""
+		return self.objeto.setColorRanges(colores)
