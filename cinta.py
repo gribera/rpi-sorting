@@ -15,6 +15,9 @@ class Cinta:
 	]
 
 	def __init__(self):
+		"""
+			Constructor
+		"""
 		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 		GPIO.setup(6, GPIO.OUT)
@@ -23,10 +26,18 @@ class Cinta:
 		GPIO.setup(26, GPIO.OUT)
 
 	def setDireccion(self):
+		"""
+			Cambia la dirección de la cinta.
+		"""
 		self.direccion = not self.direccion
 		GPIO.output(26, self.direccion)
 
 	def setVelocidad(self, velocidad):
+		"""
+			Setea la velocidad de la cinta.
+
+			velocidad: int, Velocidad (Valor de 0 al 6).
+		"""
 		GPIO.output(6, self.velocidades[int(velocidad)][0])
 		GPIO.output(13, self.velocidades[int(velocidad)][1])
 		GPIO.output(19, self.velocidades[int(velocidad)][2])
