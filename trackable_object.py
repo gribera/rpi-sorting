@@ -1,15 +1,17 @@
 class TrackableObject:
-	def __init__(self, objectID, centroid, poli, bbox, txt):
+	def __init__(self, objectID, contours, centroid, poli, bbox, txt):
 		"""
 			Constructor.
 
 			objectID: int, ID del objeto detectado.
+			contours: array, Contornos del objeto.
 			centroid: array, Coordenadas X, Y del centro del objeto.
 			poli: array, Bordes del objeto.
 			bbox: array, Rectángulo del objeto.
 			txt: string, Texto del objeto.
 		"""
 		self.objectID = objectID
+		self.contours = contours
 		self.centroids = [centroid]
 		self.poli = poli
 		self.bbox = bbox
@@ -28,6 +30,12 @@ class TrackableObject:
 			Devuelve coordenada Y del objeto.
 		"""
 		return self.centroids[0][1]
+
+	def getContours(self):
+		"""
+			Devuelve contornos del objeto.
+		"""
+		return self.contours
 
 	def getTxt(self):
 		"""
@@ -58,6 +66,12 @@ class TrackableObject:
 			Setea rectángulo del objeto.
 		"""
 		self.bbox = bbox
+
+	def setContours(self, contours):
+		"""
+			Setea contornos del objeto.
+		"""
+		self.contours = contours
 
 	def setText(self, text):
 		"""

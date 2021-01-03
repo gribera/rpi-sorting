@@ -147,11 +147,13 @@ class Manager:
 		"""
 		x = obj.getCentroidX()
 		y = obj.getCentroidY()
-		(startX, startY, w, h) = obj.bbox
 		if self.params['showCentroid'] == True:
 			self.vision.dibujarPunto(x, y)
 		if self.params['showBoundingRect'] == True:
+			(startX, startY, w, h) = obj.bbox
 			cv2.rectangle(frame,(startX,startY),(startX+w,startY+h), (255,0,0), 3)
+		if self.params['drawContours'] == True:
+			cv2.drawContours(frame, obj.getContours(), -1, [0, 255, 0], 3)
 		if self.params['showID']:
 			posX, posY = self.getPosition(self.params['position'], x, y)
 			text = "ID {}".format(obj.objectID)

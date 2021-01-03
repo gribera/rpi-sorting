@@ -71,7 +71,7 @@ class Tracker:
 		# centroids and register each of them
 		if len(self.trackableObjects) == 0:
 			for i in range(0, len(inputCentroids)):
-				self.register(inputCentroids[i], poli[i], bbox[i], figs[i][4])
+				self.register(figs[i][0], inputCentroids[i], poli[i], bbox[i], figs[i][4])
 
 		# otherwise, are are currently tracking objects so we need to
 		# try to match the input centroids to existing object
@@ -127,6 +127,7 @@ class Tracker:
 				self.disappeared[objectID] = 0
 
 				# Actualiza los bordes y los centros del objeto
+				self.trackableObjects[objectID].setContours(figs[col][0])
 				self.trackableObjects[objectID].setCentroid(inputCentroids[col])
 				self.trackableObjects[objectID].setPoligon(figs[col][2])
 				self.trackableObjects[objectID].setBoundingBox(figs[col][3])
@@ -165,19 +166,20 @@ class Tracker:
 			# register each new input centroid as a trackable object
 			else:
 				for col in unusedCols:
-					self.register(inputCentroids[col], poli[i], bbox[i], figs[i][4])
+					self.register(figs[i][4], inputCentroids[col], poli[i], bbox[i], figs[i][4])
 
-	def register(self, centroid, poli, bbox, txt):
+	def register(self, contours, centroid, poli, bbox, txt):
 		"""
 			Registra el objeto detectado.
 
+			contours: array, Contornos del objeto.
 			centroid: array, Array con las coordenadas X, Y del objeto.
 			poli: array, Polígono del objeto.
 			bbox: array, Rectángulo del objeto.
 			txt: string, Texto del objeto.
 		"""
 		self.disappeared[self.nextObjectID] = 0
-		to = TrackableObject(self.nextObjectID, centroid, poli, bbox, txt)
+		to = TrackableObject(self.nextObjectID, contours, centroid, poli, bbox, txt)
 		self.trackableObjects[self.nextObjectID] = to
 		self.nextObjectID += 1
 
