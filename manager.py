@@ -18,7 +18,7 @@ class Manager:
 
 	def __init__(self, modalidad):
 		"""
-			Constructor
+			Constructor.
 
 			modalidad: string, Modo de trabajo [color, forma, codigo]
 		"""
@@ -142,7 +142,7 @@ class Manager:
 		"""
 			Agrega al frame la información del objeto que se haya seteado para mostrar.
 
-			frame: np.array, Frame
+			frame: array, Frame
 			obj: TrackableObject, Objeto detectado
 		"""
 		x = obj.getCentroidX()
@@ -168,7 +168,7 @@ class Manager:
 		"""
 			Agrega al frame información particular sobre el color.
 
-			frame: np.array, Frame
+			frame: array, Frame
 			obj: TrackableObject, Objeto detectado
 		"""
 		if self.params['countItems'] == True:
@@ -185,7 +185,7 @@ class Manager:
 		"""
 			Agrega al frame información particular sobre la forma.
 
-			frame: np.array, Frame
+			frame: array, Frame
 			obj: TrackableObject, Objeto detectado
 		"""
 		x = obj.getCentroidX()
@@ -210,7 +210,7 @@ class Manager:
 		"""
 			Agrega al frame información particular sobre el código.
 
-			frame: np.array, Frame
+			frame: array, Frame
 			obj: TrackableObject, Objeto detectado
 		"""
 		pass
@@ -219,7 +219,7 @@ class Manager:
 		"""
 			Inicia elmovimiento de la cinta.
 
-			velocidad: int, Velocidad (Valor de 1 al 7)
+			velocidad: int, Velocidad (Valor de 0 al 6)
 		"""
 		self.cinta.setVelocidad(velocidad)
 

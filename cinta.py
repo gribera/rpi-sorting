@@ -16,7 +16,7 @@ class Cinta:
 
 	def __init__(self):
 		"""
-			Constructor
+			Constructor.
 		"""
 		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)

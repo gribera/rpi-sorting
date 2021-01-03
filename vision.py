@@ -9,19 +9,21 @@ class Vision:
 
 	def readFrame(self):
 		"""
-			Lee el frame
+			Lee el frame.
 		"""
 		self.ret, self.frame = self.cap.read()
 		return
 
 	def getFrame(self):
-		""" Devuelve el frame actual """
+		"""
+			Devuelve el frame actual .
+		"""
 		return self.frame
 
 
 	def showFrame(self, frame):
 		"""
-			Muestra el frame
+			Muestra el frame.
 		"""
 		if self.ret == True:
 			cv2.imshow('Orig', frame)
@@ -29,20 +31,20 @@ class Vision:
 
 	def waitForKey(self, key):
 		"""
-			Devuelve True si la tecla enviada como parámetro fué presionada
+			Devuelve True si la tecla enviada como parámetro fué presionada.
 		"""
 		return cv2.waitKey(1) & 0xFF == ord(key)
 
 	def getStringData(self, frame):
 		"""
-			Devuelve un string del buffer pasado por parámetro capturado
+			Devuelve un string del buffer pasado por parámetro capturado.
 		"""
 		imgEncode = cv2.imencode('.jpg', frame)[1]
 		return imgEncode.tostring()
 
 	def rotateImage(self):
 		"""
-			Rota la imágen 90 grados
+			Rota la imágen 90 grados.
 		"""
 		self.frame = cv2.flip(self.frame, cv2.ROTATE_90_CLOCKWISE)
 
@@ -55,7 +57,7 @@ class Vision:
 			p3: array, Coordenada x, y del punto 3
 			p4: array, Coordenada x, y del punto 4
 			verb: boolean, Muestra los puntos a cortar sobre la imágen
-						   sin efectuar el corte
+						   sin efectuar el corte.
 		"""
 		if verb:
 			self.dibujarPunto(p1[0], p1[1]);
@@ -70,15 +72,16 @@ class Vision:
 
 	def dibujarLinea(self):
 		"""
-			Dibuja una línea en el centro de la pantalla
+			Dibuja una línea en el centro de la pantalla.
 		"""
 		cv2.line(self.frame, (0 , 230), (640 , 230), (100,155,30), 3)
 
 	def dibujarPunto(self, x, y):
 		"""
-			Dibuja un punto en las coordenadas especificadas
-			x: int, Coordenada X
-			y: int, Coordenada Y
+			Dibuja un punto en las coordenadas especificadas.
+
+			x: int, Coordenada X.
+			y: int, Coordenada Y.
 		"""
 		cv2.circle(self.frame, (x,y), 7, (0, 255, 0), -1)
 

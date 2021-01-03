@@ -5,9 +5,21 @@ from trackable_object import TrackableObject
 
 class Tracker:
 	def __init__(self, maxDisappeared=1, maxDistance=50):
+		"""
+			Constructor.
+
+			maxDisappeared: int, Tiempo de desaparición del objeto (1 por defecto).
+			maxDistance: int, Máxima distancia entre objetos a detectar (50 por defecto).
+		"""
 		self.initializeTrackableObjects(maxDisappeared, maxDistance)
 
-	def initializeTrackableObjects(self, maxDisappeared=1, maxDistance=50):
+	def initializeTrackableObjects(self, maxDisappeared, maxDistance):
+		"""
+			Inicializa los valores del objeto tracker.
+
+			maxDisappeared: int, Tiempo de desaparición del objeto.
+			maxDistance: int, Máxima distancia entre objetos a detectar
+		"""
 		self.nextObjectID = 0
 		self.disappeared = OrderedDict()
 		self.maxDisappeared = maxDisappeared
@@ -15,6 +27,12 @@ class Tracker:
 		self.trackableObjects = {}
 
 	def setTrackableObjects(self, figs):
+		"""
+			Setea los objetos detectados.
+
+			figs: array, Array con todos los valores de cada objeto.
+		"""
+
 		# check to see if the list of input bounding box rectangles
 		# is empty
 		if len(figs) == 0:
@@ -150,6 +168,14 @@ class Tracker:
 					self.register(inputCentroids[col], poli[i], bbox[i], figs[i][4])
 
 	def register(self, centroid, poli, bbox, txt):
+		"""
+			Registra el objeto detectado.
+
+			centroid: array, Array con las coordenadas X, Y del objeto.
+			poli: array, Polígono del objeto.
+			bbox: array, Rectángulo del objeto.
+			txt: string, Texto del objeto.
+		"""
 		self.disappeared[self.nextObjectID] = 0
 		to = TrackableObject(self.nextObjectID, centroid, poli, bbox, txt)
 		self.trackableObjects[self.nextObjectID] = to

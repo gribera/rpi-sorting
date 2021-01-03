@@ -98,6 +98,9 @@ class Colores:
 			return frame, finalContours
 
 	def getKnownObjects(self):
+		"""
+			Devuelve los objetos reconocidos por esta clase.
+		"""
 		return self.knownObjects
 
 	def getColorRanges(self):

@@ -7,9 +7,19 @@ class Codigos:
 	knownObjects = [[], []]
 
 	def __init__(self):
+		"""
+			Constructor.
+		"""
 		self.tracker = tracker.Tracker()
 
 	def getContours(self, frame, minArea=1000, returnMask=False):
+		"""
+			Detecta los contornos de los objetos.
+
+			frame: array, Frame
+			minArea: int, Área mínima de detección (1000 por defecto).
+			returnMask: boolean, Devuelve máscara en lugar del frame
+		"""
 		finalContours = []
 
 		for barcode in decode(frame):
@@ -30,4 +40,7 @@ class Codigos:
 			return frame, finalContours
 
 	def getKnownObjects(self):
+		"""
+			Devuelve los objetos reconocidos por esta clase.
+		"""
 		return self.knownObjects
