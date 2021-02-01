@@ -166,7 +166,7 @@ class Tracker:
 			# register each new input centroid as a trackable object
 			else:
 				for col in unusedCols:
-					self.register(figs[i][4], inputCentroids[col], poli[i], bbox[i], figs[i][4])
+					self.register(figs[i][0], inputCentroids[col], poli[i], bbox[i], figs[i][4])
 
 	def register(self, contours, centroid, poli, bbox, txt):
 		"""
