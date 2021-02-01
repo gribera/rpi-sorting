@@ -196,8 +196,8 @@ class Manager:
 		forma = obj.getTxt()
 		if self.params['measure'] == True:
 			if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
-				mW = round((self.object.findDis(obj.poli[0][0], obj.poli[1][0])),1)
-				nH = round((self.object.findDis(obj.poli[0][0], obj.poli[2][0])),1)
+				mW = round((self.object.findDis(obj.poli[0][0], obj.poli[1][0])), 1)
+				nH = round((self.object.findDis(obj.poli[0][0], obj.poli[2][0])), 1)
 
 				cv2.arrowedLine(frame, (obj.poli[0][0][0],obj.poli[0][0][1]),
 					(obj.poli[1][0][0], obj.poli[1][0][1]), (255,0,255), 2)
@@ -207,6 +207,12 @@ class Manager:
 				cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
 					(255,0,255), 2)
 				cv2.putText(frame, '{}cm'.format(nH), (startX-70,startY+h//2), cv2.FONT_HERSHEY_COMPLEX, .7, (255,0,255), 2)
+			if forma == 'Circulo':
+				border = obj.getContours()[0][0]
+				mW = round((self.object.findDis([x, y], [border[0], border[1]])), 1)
+				cv2.arrowedLine(frame, (x, y), (border[0], border[1]), (255,0,255), 2)
+				cv2.putText(frame, '{}cm'.format(mW), (startX+30,startY-10), cv2.FONT_HERSHEY_COMPLEX, .7,
+					(255,0,255), 2)
 
 	def printCodigoInfo(self, frame, obj):
 		"""
