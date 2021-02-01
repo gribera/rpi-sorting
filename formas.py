@@ -10,7 +10,7 @@ class Formas:
 		self.tracker = tracker.Tracker()
 
 	def findDis(self, pts1, pts2):
-		return (((pts2[0]-pts1[0])**2 + (pts2[1]-pts1[1])**2)**0.5)/10
+		return (((pts2[0]-pts1[0])**2 + (pts2[1]-pts1[1])**2)**0.5)/28
 
 	def detectShape(self, pts):
 		lados = len(pts)
