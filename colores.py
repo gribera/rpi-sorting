@@ -10,11 +10,11 @@ class Colores:
 	blue_lower = np.array([100,100,23], np.uint8)
 	blue_upper = np.array([125,255,255], np.uint8)
 
-#	yellow_lower = np.array([15,100,20], np.uint8)
-#	yellow_upper = np.array([45,255, 255], np.uint8)
+	yellow_lower = np.array([15,100,20], np.uint8)
+	yellow_upper = np.array([45,255, 255], np.uint8)
 
-	yellow_lower = np.array([20, 100, 100])
-	yellow_upper = np.array([30, 255, 255])
+	# yellow_lower = np.array([20, 100, 100])
+	# yellow_upper = np.array([30, 255, 255])
 
 	red1_lower = np.array([0,100,20], np.uint8)
 	red1_upper = np.array([5,255,255], np.uint8)

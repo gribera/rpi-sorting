@@ -2,7 +2,7 @@ import sys
 import RPi.GPIO as GPIO
 
 class Cinta:
-	direccion = True
+	direccion = False
 	velocidades = [
 		[0, 0, 0],
 		[0, 0, 1],
