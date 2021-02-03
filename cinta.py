@@ -24,6 +24,7 @@ class Cinta:
 		GPIO.setup(13, GPIO.OUT)
 		GPIO.setup(19, GPIO.OUT)
 		GPIO.setup(26, GPIO.OUT)
+		self.setDireccion()
 
 	def setDireccion(self):
 		"""
