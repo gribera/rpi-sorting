@@ -11,6 +11,10 @@ $(document).ready(function () {
 		socket.on('colores', function(rangos) {
 			colorRanges = JSON.parse(rangos)
 		})
+
+		socket.on('addList', function(data) {
+			$('#tblObjetosDetectados > tbody:last-child').append(_genTableRow(JSON.parse(data)));
+		})
 	});
 
 	$('#video').hide()
@@ -153,8 +157,50 @@ $(document).ready(function () {
 	});
 
 	$('#configModal').on('show.bs.modal', function (event) {
-	  const modo = $('input[name=modo]:checked').val()
-	  const modal = $(this)
-	  modal.find('.modal-title').text('Configurar ' + modo)
+	  const modo = $('input[name=modo]:checked').val();
+	  const modal = $(this);
+	  modal.find('.modal-title').text('Configurar ' + modo);
 	})
+
+// $('#imageModal').on('show.bs.modal', function(event) {
+// 	console.log('hola')
+// 	const image = $(this);
+// 	console.log(image)
+// })
+
+	$(document).on('click', '.btn-image-modal', function() {
+		var image = $(this).data('img');
+		$('#imagen').attr('src', 'data:image/png;base64, ' + image);
+	})
+
+	// $('#boton-image-modal').on('click', function () {
+	// 	console.log('entra')
+ //    const image = $(this).data('img');
+ //    console.log(image)
+ //    $('#imagen').attr('src', image);
+	// });
+
+	const _genTableRow = (data) => {
+		fecha = new Date()
+		hora = fecha.getHours() + ':' + fecha.getMinutes() + ':' + fecha.getSeconds();
+		return `<tr>
+				      <th scope="row">${data.id}</th>
+				      <td>${data.objeto}</td>
+				      <td>${hora}</td>
+				      <td align="center">
+				      	<a href="#"
+				      		 class="btn-image-modal"
+				      		 data-img="${data.imagen}"
+				      		 data-id="ISBN-001122"
+				      		 data-toggle="modal"
+				      		 data-target="#imageModal">
+				      		<img width="64" height="48" src="data:image/png;base64, ${data.imagen}" />
+				      	</a>
+				      </td>
+				    </tr>`;
+	}
+
+	const delTableRows = () => {
+		$('#tblObjetosDetectados > tbody').empty();
+	}
 });

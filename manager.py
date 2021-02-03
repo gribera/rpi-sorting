@@ -1,4 +1,5 @@
 import cv2
+import json
 import numpy as np
 import vision as vision
 import colores as colores
@@ -15,8 +16,9 @@ class Manager:
 	object = None
 	infoFunction = None
 	knownObjects = None
+	socket = None
 
-	def __init__(self, modalidad):
+	def __init__(self, modalidad, socket):
 		"""
 			Constructor.
 
@@ -26,6 +28,7 @@ class Manager:
 		self.classifier = classifier.Classifier()
 		self.tracker = tracker.Tracker()
 		self.modalidad = modalidad
+		self.socket = socket
 		self.iniciarObjeto()
 
 		# Parámetros por defecto de las vistas
@@ -93,9 +96,16 @@ class Manager:
 
 			for key, obj in self.trackableObjects.items():
 				self.showInfo(imgContours, obj)
-				if not obj.isClassified():
+				if not obj.isClassified() and (210 <= obj.getCentroidY() >= 230):
 					self.classify(obj)
+					encImage = self.vision.getEncodedImage(self.frame)
+					self.socket.emit('addList', json.dumps({
+						'id': obj.getObjectID(),
+						'objeto': obj.getTxt(),
+						'imagen': encImage
+					}))
 
+		self.vision.drawCenterLine()
 		return self.vision.getStringData(imgContours)
 
 	def cambioModo(self, modo):
@@ -195,7 +205,7 @@ class Manager:
 		(startX, startY, w, h) = obj.bbox
 		forma = obj.getTxt()
 		if self.params['measure'] == True:
-			if (forma == 'Cuadrado') | (forma == 'Rectangulo'):
+			if (forma == 'Cuadrado') or (forma == 'Rectangulo'):
 				mW = round((self.object.findDis(obj.poli[0][0], obj.poli[1][0])), 1)
 				nH = round((self.object.findDis(obj.poli[0][0], obj.poli[2][0])), 1)
 
@@ -289,4 +299,4 @@ class Manager:
 		"""
 			Setea rangos de colores (sólo en modalidad 'color').
 		"""
-		return self.objeto.setColorRanges(colores)
+		return self.object.setColorRanges(colores)

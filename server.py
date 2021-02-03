@@ -5,7 +5,6 @@ from engineio.payload import Payload
 from threading import Thread
 import fps as FPS
 
-manager = manager.Manager('color')
 app = Flask(__name__,
 			static_folder="frontend",
 			template_folder='frontend')
@@ -14,6 +13,7 @@ Payload.max_decode_packets = 74
 app.config['SECRET_KEY'] = 'secret!'
 
 socketio = SocketIO(app) # , logger=True
+manager = manager.Manager('color', socketio)
 
 streaming = True
 fps = FPS.FPS()
@@ -152,6 +152,9 @@ def handle_message(msg):
 @socketio.on('setColores')
 def handle_message(colores):
     manager.setColorRanges(colores)
+
+def sendDetectedObject(obj):
+	socketio.emit('addList', obj)
 
 if __name__ == '__main__':
 	start()

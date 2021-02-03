@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import base64
 
 class Vision:
 	def __init__(self):
@@ -20,6 +21,10 @@ class Vision:
 		"""
 		return self.frame
 
+	def getEncodedImage(self, image):
+		retval, buffer = cv2.imencode('.jpg', image)
+		encodedImage = base64.b64encode(buffer).decode('utf-8')
+		return encodedImage
 
 	def showFrame(self, frame):
 		"""
@@ -28,6 +33,9 @@ class Vision:
 		if self.ret == True:
 			cv2.imshow('Orig', frame)
 		return
+
+	def drawCenterLine(self):
+		cv2.line(self.frame, (0, 220), (680, 220), (0, 255, 0), thickness=2)
 
 	def waitForKey(self, key):
 		"""

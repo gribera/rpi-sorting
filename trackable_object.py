@@ -19,6 +19,9 @@ class TrackableObject:
 		self.classified = False
 		self.counted = False
 
+	def getObjectID(self):
+		return self.objectID
+
 	def getCentroidX(self):
 		"""
 			Devuelve coordenada X del objeto.
