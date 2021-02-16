@@ -34,9 +34,6 @@ class Vision:
 			cv2.imshow('Orig', frame)
 		return
 
-	def drawCenterLine(self):
-		cv2.line(self.frame, (0, 220), (680, 220), (0, 255, 0), thickness=2)
-
 	def waitForKey(self, key):
 		"""
 			Devuelve True si la tecla enviada como parámetro fué presionada.
@@ -54,7 +51,7 @@ class Vision:
 		"""
 			Rota la imágen 90 grados.
 		"""
-		self.frame = cv2.flip(self.frame, cv2.ROTATE_90_CLOCKWISE)
+		self.frame = cv2.rotate(self.frame, cv2.ROTATE_180)
 
 	def cutBorders(self, p1, p2, p3, p4, verb):
 		"""
