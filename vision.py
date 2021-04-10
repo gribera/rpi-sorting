@@ -34,6 +34,9 @@ class Vision:
 			cv2.imshow('Orig', frame)
 		return
 
+	def drawCenterLine(self):
+		cv2.line(self.frame, (0, 220), (680, 220), (0, 255, 0), thickness=2)
+
 	def waitForKey(self, key):
 		"""
 			Devuelve True si la tecla enviada como parámetro fué presionada.
