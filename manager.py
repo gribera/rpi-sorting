@@ -98,12 +98,7 @@ class Manager:
 				self.showInfo(imgContours, obj)
 				if not obj.isClassified() and (210 <= obj.getCentroidY() >= 230):
 					self.classify(obj)
-					encImage = self.vision.getEncodedImage(self.frame)
-					self.socket.emit('addList', json.dumps({
-						'id': obj.getObjectID(),
-						'objeto': obj.getTxt(),
-						'imagen': encImage
-					}))
+					self.sendPicture(obj)
 
 		self.vision.drawCenterLine()
 		return self.vision.getStringData(imgContours)
@@ -300,3 +295,18 @@ class Manager:
 			Setea rangos de colores (sólo en modalidad 'color').
 		"""
 		return self.object.setColorRanges(colores)
+
+	def sendPicture(self, obj=None):
+		"""
+			Toma una foto y la envía por socket al cliente.
+
+			obj: TrackableObject, Objeto detectado [opcional]
+		"""
+		encImage = self.vision.getEncodedImage(self.frame)
+		objectID = obj.getObjectID() if obj else "F"
+		objectText = obj.getTxt() if obj else "Foto"
+		self.socket.emit('addList', json.dumps({
+			'id': objectID,
+			'objeto': objectText,
+			'imagen': encImage
+		}))

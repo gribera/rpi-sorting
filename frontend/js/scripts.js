@@ -28,8 +28,10 @@ $(document).ready(function () {
 				$('#video').show()
 				next()
 			})
+			$('#sendPicture').attr('disabled', false)
 		}
 		else {
+			$('#sendPicture').attr('disabled', true)
 			$.getJSON('/stop');
 			$('#video-frame').queue(function(next) {
 				$(this).attr('src', '')
@@ -80,31 +82,31 @@ $(document).ready(function () {
 	});
 
 	$('#chk-show-id').change(function () {
-		$.getJSON('/params/showID')
+		$.getJSON('/params/showID');
 	});
 
 	$('#chk-show-centroid').change(function () {
-		$.getJSON('/params/showCentroid')
+		$.getJSON('/params/showCentroid');
 	});
 
 	$('#chk-draw-contours').change(function () {
-		$.getJSON('/params/drawContours')
+		$.getJSON('/params/drawContours');
 	});
 
 	$('#chk-show-txt').change(function () {
-		$.getJSON('/params/showTxt')
+		$.getJSON('/params/showTxt');
 	});
 
 	$('#chk-show-bounding-rect').change(function () {
-		$.getJSON('/params/showBoundingRect')
+		$.getJSON('/params/showBoundingRect');
 	});
 
 	$('#chk-show-measure').change(function () {
-		$.getJSON('/params/showMeasure')
+		$.getJSON('/params/showMeasure');
 	});
 
 	$('#chk-show-mask').click(function () {
-		$.getJSON('/params/showMask')
+		$.getJSON('/params/showMask');
 	});
 
 	const _getOptions = () => {
@@ -160,6 +162,10 @@ $(document).ready(function () {
 	  const modo = $('input[name=modo]:checked').val();
 	  const modal = $(this);
 	  modal.find('.modal-title').text('Configurar ' + modo);
+	})
+
+	$('#sendPicture').click(function (event) {
+		$.getJSON('/send_picture');
 	})
 
 // $('#imageModal').on('show.bs.modal', function(event) {

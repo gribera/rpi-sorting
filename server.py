@@ -103,6 +103,12 @@ def direccion():
 	manager.cambiarDireccionCinta()
 	return 'OK'
 
+@app.route('/send_picture')
+def sendPicture():
+	global manager
+	manager.sendPicture()
+	return 'OK'
+
 @app.route('/params/showID')
 def showID():
 	global manager
