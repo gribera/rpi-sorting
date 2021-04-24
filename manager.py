@@ -2,12 +2,12 @@ import cv2
 import json
 import numpy as np
 import vision as vision
-import colores as colores
-import formas as formas
-import codigos as codigos
 import tracker as tracker
 import cinta as cinta
 import classifier as classifier
+from classifiers import colores
+from classifiers import formas
+from classifiers import codigos
 
 class Manager:
 	vision = vision.Vision()
