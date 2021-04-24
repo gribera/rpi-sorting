@@ -8,6 +8,7 @@ import classifier as classifier
 from classifiers import colores
 from classifiers import formas
 from classifiers import codigos
+from classifiers import patrones
 
 class Manager:
 	vision = vision.Vision()
@@ -22,7 +23,7 @@ class Manager:
 		"""
 			Constructor.
 
-			modalidad: string, Modo de trabajo [color, forma, codigo]
+			modalidad: string, Modo de trabajo [color, forma, codigo, patron]
 		"""
 		self.cinta = cinta.Cinta()
 		self.classifier = classifier.Classifier()
@@ -71,6 +72,9 @@ class Manager:
 		if self.modalidad == 'codigo':
 			self.object = codigos.Codigos()
 			self.infoFunction = self.printCodigoInfo
+		if self.modalidad == 'patron':
+			self.object = patrones.Patrones()
+			self.infoFunction = self.printPatronInfo
 
 		self.knownObjects = self.object.getKnownObjects()
 
@@ -107,7 +111,7 @@ class Manager:
 		"""
 			Cambia modo de trabajo
 
-			modo: string, Modo de trabajo [color, forma, codigo]
+			modo: string, Modo de trabajo [color, forma, codigo, patron]
 		"""
 		self.modalidad = modo
 		self.iniciarObjeto()
@@ -222,6 +226,15 @@ class Manager:
 	def printCodigoInfo(self, frame, obj):
 		"""
 			Agrega al frame información particular sobre el código.
+
+			frame: array, Frame
+			obj: TrackableObject, Objeto detectado
+		"""
+		pass
+
+	def printPatronInfo(self, frame, obj):
+		"""
+			Agrega al frame información particular sobre el patrón.
 
 			frame: array, Frame
 			obj: TrackableObject, Objeto detectado

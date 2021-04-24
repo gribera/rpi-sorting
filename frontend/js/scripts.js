@@ -138,7 +138,8 @@ $(document).ready(function () {
 		const opcionesModos = {
 			color: [...commonOptions, 'config-color'],
 			forma: [...commonOptions, 'chk-show-measure'],
-			codigo: [...commonOptions]
+			codigo: [...commonOptions],
+			patron: [...commonOptions]
 		}
 
  		$('#custom-options div').each(function(){
